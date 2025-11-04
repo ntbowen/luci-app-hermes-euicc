@@ -196,3 +196,16 @@ This is a community-driven project and contributions are welcome. The applicatio
 - [estkme-group](https://github.com/estkme-group/hermes-euicc) for the hermes-euicc eSIM client
 - [cozmo](https://github.com/cozmo/jsQR) for the JavaScript QR code library
 - [OpenWrt community & LuCI developers](https://openwrt.org/) for the ecosystem
+
+## Fork Information
+
+This project is forked from [stich86/luci-app-epm](https://github.com/stich86/luci-app-epm) and has been actively maintained and enhanced with additional features including:
+
+- SM-DS discovery and automatic profile download
+- Detailed chip information display (storage, capabilities, versions)
+- Bulk notification processing
+- Storage validation before profile downloads
+- Enhanced UI/UX improvements
+- Comprehensive internationalization support
+
+We extend our gratitude to the original author for laying the foundation of this project.
