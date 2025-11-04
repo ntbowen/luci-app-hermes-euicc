@@ -176,7 +176,7 @@ msgstr ""
 msgid "MBIM device used by MBIM APDU backend"
 msgstr ""
 
-msgid "Manage eSIM profiles using lpac"
+msgid "Manage eSIM profiles using Hermes eUICC"
 msgstr ""
 
 msgid "Manual Download"
