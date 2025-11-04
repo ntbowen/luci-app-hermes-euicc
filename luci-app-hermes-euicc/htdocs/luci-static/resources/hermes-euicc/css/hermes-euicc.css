@@ -20,8 +20,8 @@
     --light-bg: #f8f9fa;
     --border-color: #dee2e6;
     --border-radius: 6px;
-    --box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    --box-shadow-hover: 0 4px 8px rgba(0,0,0,0.15);
+    --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --box-shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* ==========================================================================
@@ -29,52 +29,147 @@
    ========================================================================== */
 
 /* Display utilities */
-.hidden { display: none !important; }
-.text-center { text-align: center !important; }
-.text-right { text-align: right !important; }
-.font-bold { font-weight: bold !important; }
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.font-bold {
+    font-weight: bold !important;
+}
 
 /* Spacing utilities */
-.mt-10 { margin-top: 10px !important; }
-.mt-15 { margin-top: 15px !important; }
-.mt-20 { margin-top: 20px !important; }
-.mt-30 { margin-top: 30px !important; }
-.mb-15 { margin-bottom: 15px !important; }
-.mb-20 { margin-bottom: 20px !important; }
-.p-10 { padding: 10px !important; }
-.p-20 { padding: 20px !important; }
+.mt-10 {
+    margin-top: 10px !important;
+}
+
+.mt-15 {
+    margin-top: 15px !important;
+}
+
+.mt-20 {
+    margin-top: 20px !important;
+}
+
+.mt-30 {
+    margin-top: 30px !important;
+}
+
+.mb-15 {
+    margin-bottom: 15px !important;
+}
+
+.mb-20 {
+    margin-bottom: 20px !important;
+}
+
+.p-10 {
+    padding: 10px !important;
+}
+
+.p-20 {
+    padding: 20px !important;
+}
 
 /* Alignment */
-.v-align-middle { vertical-align: middle !important; }
-.inline-block { display: inline-block !important; }
-.v-align-top { vertical-align: top !important; }
+.v-align-middle {
+    vertical-align: middle !important;
+}
+
+.inline-block {
+    display: inline-block !important;
+}
+
+.v-align-top {
+    vertical-align: top !important;
+}
 
 /* Width utilities */
-.width-150 { width: 150px !important; }
-.max-width-300 { max-width: 300px !important; }
-.max-height-200 { max-height: 200px !important; }
+.width-150 {
+    width: 150px !important;
+}
+
+.max-width-300 {
+    max-width: 300px !important;
+}
+
+.max-height-200 {
+    max-height: 200px !important;
+}
 
 /* Size and spacing */
-.mt-5 { margin-top: 5px !important; }
-.mt-8 { margin-top: 8px !important; }
-.mb-15-px { margin-bottom: 15px !important; }
-.min-height-20 { min-height: 20px !important; }
-.font-size-14 { font-size: 14px !important; }
-.font-size-11 { font-size: 11px !important; }
+.mt-5 {
+    margin-top: 5px !important;
+}
+
+.mt-8 {
+    margin-top: 8px !important;
+}
+
+.mb-15-px {
+    margin-bottom: 15px !important;
+}
+
+.min-height-20 {
+    min-height: 20px !important;
+}
+
+.font-size-14 {
+    font-size: 14px !important;
+}
+
+.font-size-11 {
+    font-size: 11px !important;
+}
 
 /* Color utilities */
-.color-white { color: white !important; }
-.color-red { color: red !important; }
-.color-green { color: green !important; }
-.color-blue { color: #0099cc !important; }
-.color-gray { color: #666 !important; }
-.color-danger { color: #d9534f !important; }
+.color-white {
+    color: white !important;
+}
+
+.color-red {
+    color: red !important;
+}
+
+.color-green {
+    color: green !important;
+}
+
+.color-blue {
+    color: #0099cc !important;
+}
+
+.color-gray {
+    color: #666 !important;
+}
+
+.color-danger {
+    color: #d9534f !important;
+}
 
 /* Border utilities */
-.border-ccc { border: 1px solid #ccc !important; }
-.border-radius-4 { border-radius: 4px !important; }
-.border-radius-5 { border-radius: 5px !important; }
-.border-radius-8 { border-radius: 8px !important; }
+.border-ccc {
+    border: 1px solid #ccc !important;
+}
+
+.border-radius-4 {
+    border-radius: 4px !important;
+}
+
+.border-radius-5 {
+    border-radius: 5px !important;
+}
+
+.border-radius-8 {
+    border-radius: 8px !important;
+}
 
 /* Divider */
 .divider {
@@ -299,38 +394,10 @@
    BUTTONS
    ========================================================================== */
 
-.cbi-button {
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    padding: 0.5em 1em;
-    cursor: pointer;
-    font-size: 0.8em;
-    margin: 0 0.25em;
-    transition: all 0.2s ease;
-}
-
-.cbi-button:hover {
-    box-shadow: var(--box-shadow-hover);
-    border-color: #9ca3af;
-}
-
-.cbi-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none !important;
-}
-
-/* Button variants */
-.cbi-button-save { background: #5bc0de; color: white; border-color: #46b8da; }
-.cbi-button-apply { background: var(--success-color); color: white; border-color: #4cae4c; }
-.cbi-button-reload { background: var(--light-bg); border-color: var(--gray-color); }
-.cbi-button-reset { background: var(--gray-color); color: white; border-color: var(--gray-hover); }
 
 /* Action buttons (universal) */
 .profile-action-btn,
-.notification-action-btn,
-.download-action-btn {
+.notification-action-btn {
     min-width: 70px !important;
     height: 36px !important;
     padding: 8px 12px !important;
@@ -346,43 +413,27 @@
     margin: 0 2px !important;
 }
 
-.profile-action-btn:hover,
-.notification-action-btn:hover,
-.download-action-btn:hover {
-    background-color: var(--primary-hover) !important;
-    transform: translateY(-1px);
-    box-shadow: var(--box-shadow-hover) !important;
-}
-
-.profile-action-btn:active,
-.notification-action-btn:active,
-.download-action-btn:active {
-    transform: translateY(0);
-    box-shadow: var(--box-shadow) !important;
-}
-
 /* Button color variants */
-.process-btn { background-color: var(--success-color) !important; }
-.process-btn:hover { background-color: var(--success-hover) !important; }
-.remove-btn { background-color: var(--danger-color) !important; }
-.remove-btn:hover { background-color: var(--danger-hover) !important; }
-.clear-btn { background-color: var(--purple-color) !important; }
-.clear-btn:hover { background-color: var(--purple-hover) !important; }
-.refresh-btn { background-color: var(--gray-color) !important; }
-.refresh-btn:hover { background-color: var(--gray-hover) !important; }
+.process-btn {
+    background-color: var(--success-color) !important;
+}
+
+.remove-btn {
+    background-color: var(--danger-color) !important;
+}
+
+.clear-btn {
+    background-color: var(--purple-color) !important;
+}
+
+.refresh-btn {
+    background-color: var(--gray-color) !important;
+}
 
 /* Specific button sizing */
 .notification-action-btn {
     height: 32px !important;
     font-size: 12px !important;
-}
-
-.download-action-btn {
-    min-width: 120px !important;
-    height: 40px !important;
-    padding: 10px 16px !important;
-    font-size: 14px !important;
-    margin: 0 8px !important;
 }
 
 .qr-clear-btn {
@@ -528,7 +579,7 @@
 
 .primary-action {
     border-radius: var(--border-radius) 0 0 var(--border-radius) !important;
-    border-right: 1px solid rgba(255,255,255,0.3) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 .dropdown-toggle {
@@ -545,7 +596,7 @@
 
 .dropdown-toggle:after {
     content: '';
-    border-left: 1px solid rgba(255,255,255,0.3);
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
     position: absolute;
     left: 0;
     top: 4px;
@@ -560,7 +611,7 @@
     background: white;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     min-width: 160px;
     max-width: 200px;
     z-index: 1000;
@@ -609,8 +660,13 @@
     font-size: 16px;
 }
 
-.icon-edit:before { content: '✏️'; }
-.icon-trash:before { content: '🗑️'; }
+.icon-edit:before {
+    content: '✏️';
+}
+
+.icon-trash:before {
+    content: '🗑️';
+}
 
 /* ==========================================================================
    NOTIFICATIONS SECTION
@@ -628,11 +684,30 @@
     text-align: center;
 }
 
-.operation-install { background-color: var(--info-color); color: white; }
-.operation-enable { background-color: var(--success-color); color: white; }
-.operation-disable { background-color: var(--warning-color); color: #212529; }
-.operation-delete { background-color: var(--danger-color); color: white; }
-.operation-unknown { background-color: var(--gray-color); color: white; }
+.operation-install {
+    background-color: var(--info-color);
+    color: white;
+}
+
+.operation-enable {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.operation-disable {
+    background-color: var(--warning-color);
+    color: #212529;
+}
+
+.operation-delete {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.operation-unknown {
+    background-color: var(--gray-color);
+    color: white;
+}
 
 /* ==========================================================================
    TABLES
@@ -813,8 +888,8 @@
     :root {
         --light-bg: #1a1a1a;
         --border-color: #404040;
-        --box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        --box-shadow-hover: 0 4px 8px rgba(0,0,0,0.4);
+        --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        --box-shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.4);
     }
 
     /* Message boxes */
@@ -936,7 +1011,9 @@
     }
 
     /* Headings */
-    h2, h3, h4 {
+    h2,
+    h3,
+    h4 {
         color: #e0e0e0 !important;
     }
 
