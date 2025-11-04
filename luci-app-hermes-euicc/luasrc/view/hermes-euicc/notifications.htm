@@ -1,0 +1,103 @@
+<%+header%>
+
+<!-- eSIM Connectivity Banner -->
+<div id="esim-connectivity-banner" class="mb-20">
+    <div id="connectivity-checking" class="info-box">
+        <i class="icon-spinner"></i> <strong><%:Checking internet connection...%></strong>
+    </div>
+
+    <div id="connectivity-online" class="success-box">
+        <i class="icon-ok"></i> <strong><%:Internet connection available%></strong> - <%:You can manage eSIM profiles%>
+    </div>
+
+    <div id="connectivity-offline" class="error-box">
+        <i class="icon-remove"></i> <strong><%:No internet connection detected%></strong> - <%:An internet connection is required to download and manage eSIM profiles. Please check your WAN connection.%>
+        <br><br>
+        <button type="button" class="cbi-button cbi-button-apply" onclick="checkConnectivity()"><%:Check Again%></button>
+    </div>
+</div>
+
+<h2 name="content"><%:Notifications%></h2>
+<div class="cbi-map-descr"><%:Manage pending eSIM notifications - process or remove notifications from your device%></div>
+
+<div id="notifications-loading" class="loading-container">
+    <img src="<%=resource%>/hermes-euicc/icons/loading.gif" alt="<%:Loading%>" class="v-align-middle" />
+    <%:Loading notifications...%>
+</div>
+
+<div id="notifications-content" class="hidden">
+    <fieldset class="cbi-section">
+        <legend><%:Pending Notifications%></legend>
+        <div class="cbi-section-node">
+            <div class="table-responsive">
+                <table class="cbi-section-table" id="notifications-table">
+                    <thead>
+                        <tr class="cbi-section-table-titles">
+                            <th class="cbi-section-table-cell"><%:Sequence%></th>
+                            <th class="cbi-section-table-cell"><%:ICCID%></th>
+                            <th class="cbi-section-table-cell"><%:Provider%></th>
+                            <th class="cbi-section-table-cell"><%:Operation%></th>
+                            <th class="cbi-section-table-cell table-cell-center table-cell-min-width"><%:Actions%></th>
+                        </tr>
+                    </thead>
+                    <tbody id="notifications-tbody">
+                        <!-- Notifications will appear here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="no-notifications" class="no-items-message">
+                <%:No pending notifications%>
+            </div>
+        </div>
+
+    </fieldset>
+</div>
+
+<div id="notification-status" class="mt-20">
+    <div id="notifications-success" class="success-box">
+        <strong><%:Status%>:</strong> <span id="notifications-success-message"></span>
+    </div>
+
+    <div id="notifications-error" class="error-box">
+        <strong><%:Error%>:</strong> <span id="notifications-error-message"></span>
+    </div>
+</div>
+
+<!-- Output Logs Section - will be created dynamically by JavaScript -->
+<div id="notifications-logs-section" class="mt-30 hidden">
+    <fieldset class="cbi-section">
+        <legend><%:Output Logs%></legend>
+        <div class="cbi-section-node">
+            <div id="notifications-logs-content" class="logs-content">
+                <!-- Logs will appear here -->
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+<div class="cbi-page-custom-actions">
+        <div id="bulk-notification-actions" class="hidden">
+            <input type="button" class="cbi-button notification-action-btn process-btn" value="Process All" onclick="processAllNotifications()" />
+            <input type="button" class="cbi-button notification-action-btn process-btn" value="Process and Remove All" onclick="processAllNotificationsAndRemove()" />
+            <input type="button" class="cbi-button notification-action-btn remove-btn" value="Remove All" onclick="removeAllNotifications()" />
+        </div>
+        <input type="button" class="cbi-button notification-action-btn refresh-btn" value="Clear Logs" onclick="clearNotificationLogs()" />
+        <input type="button" class="cbi-button notification-action-btn refresh-btn" value="Refresh" onclick="loadNotifications()" />
+</div>
+
+<link rel="stylesheet" type="text/css" href="<%=resource%>/hermes-euicc/css/hermes-euicc.css" />
+<script type="text/javascript" src="<%=resource%>/hermes-euicc/js/hermes-connectivity.js"></script>
+<script type="text/javascript" src="<%=resource%>/hermes-euicc/js/hermes-notifications.js"></script>
+<script type="text/javascript">
+    // Initialize page when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(loadNotifications, 100);
+        });
+    } else {
+        setTimeout(loadNotifications, 100);
+    }
+</script>
+
+<%+footer%>

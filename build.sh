@@ -1,0 +1,515 @@
+#!/bin/bash
+# Copyright 2025 KilimcininKorOglu
+# https://github.com/KilimcininKorOglu/luci-hermes-euicc
+# Licensed under the MIT License
+
+# LuCI App Hermes eUICC - IPK Package Builder
+# Builds standalone IPK package without OpenWrt SDK
+# For eSIM profile management on Quectel modems
+
+set -e
+
+# Colors for output
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# Get script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$SCRIPT_DIR"
+
+# Self-check: Fix line endings in build.sh itself if needed
+# This ensures the script can run even if it has Windows line endings
+if command -v dos2unix >/dev/null 2>&1; then
+    # dos2unix available - use it
+    if file "$0" 2>/dev/null | grep -q "CRLF"; then
+        echo -e "${YELLOW}⚠${NC} Build script has Windows line endings, converting..."
+        dos2unix "$0" 2>/dev/null
+        echo -e "${GREEN}✓${NC} Converted build.sh to Unix line endings"
+        echo -e "${BLUE}ℹ${NC} Please re-run the build script"
+        exit 0
+    fi
+else
+    # dos2unix not available - use sed
+    if grep -q $'\r' "$0" 2>/dev/null; then
+        echo -e "${YELLOW}⚠${NC} Build script has Windows line endings, converting..."
+        sed -i 's/\r$//' "$0"
+        echo -e "${GREEN}✓${NC} Converted build.sh to Unix line endings"
+        echo -e "${BLUE}ℹ${NC} Please re-run the build script"
+        exit 0
+    fi
+fi
+
+# Package information
+PKG_NAME="luci-app-hermes-euicc"
+PKG_SOURCE_DIR="$PROJECT_DIR/$PKG_NAME"
+PKG_VERSION=$(grep '^PKG_VERSION:=' "$PKG_SOURCE_DIR/Makefile" | cut -d'=' -f2)
+PKG_ARCH="all"
+
+# Auto-increment build number based on existing IPK files
+# Pattern: luci-app-hermes-euicc_1.0.0-N_all.ipk -> extract N and increment
+BASE_VERSION="$PKG_VERSION"
+LATEST_BUILD=0
+
+# Find all existing IPK files and extract highest build number
+shopt -s nullglob
+for ipk in "$PROJECT_DIR"/${PKG_NAME}_${BASE_VERSION}-*_${PKG_ARCH}.ipk; do
+    if [ -f "$ipk" ]; then
+        # Extract build number using Perl regex: 1.0.1-N_all.ipk -> N
+        BUILD_NUM=$(basename "$ipk" | perl -ne 'print $1 if /'"$PKG_NAME"'_'"${BASE_VERSION//./\\.}"'-(\d+)_'"$PKG_ARCH"'\.ipk/')
+        if [ -n "$BUILD_NUM" ] && [ "$BUILD_NUM" -gt "$LATEST_BUILD" ]; then
+            LATEST_BUILD=$BUILD_NUM
+        fi
+    fi
+done
+shopt -u nullglob
+
+# Increment build number
+NEW_BUILD=$((LATEST_BUILD + 1))
+PKG_RELEASE="$NEW_BUILD"
+FULL_VERSION="${PKG_VERSION}-${PKG_RELEASE}"
+
+# Update Makefile with new build number
+sed -i "s/^PKG_RELEASE:=.*/PKG_RELEASE:=$NEW_BUILD/" "$PKG_SOURCE_DIR/Makefile"
+
+# Extract package information from Makefile
+PKG_LICENSE=$(grep '^PKG_LICENSE:=' "$PKG_SOURCE_DIR/Makefile" | cut -d'=' -f2)
+PKG_MAINTAINER=$(grep '^PKG_MAINTAINER:=' "$PKG_SOURCE_DIR/Makefile" | cut -d'=' -f2)
+# Extract developer name from maintainer (e.g., "Name <email>" -> "Name")
+DEVELOPER_NAME=$(echo "$PKG_MAINTAINER" | sed 's/<.*//' | sed 's/[[:space:]]*$//')
+
+# Generate changelog from recent git commits (excluding version bump commits)
+generate_changelog() {
+    local changelog_items=""
+    local count=0
+
+    # Get last 10 commits, filter out version bumps and chore commits, take first 5
+    while IFS= read -r commit_msg; do
+        # Skip version bump commits
+        if echo "$commit_msg" | grep -q "bump version\|chore:"; then
+            continue
+        fi
+
+        # Extract the description after emoji and type
+        # Format: "🔧 feat(build): description" -> "description"
+        local desc=$(echo "$commit_msg" | sed -E 's/^[^ ]+ [^:]+: (.+)$/\1/')
+
+        # Capitalize first letter
+        desc="$(echo ${desc:0:1} | tr '[:lower:]' '[:upper:]')${desc:1}"
+
+        changelog_items="${changelog_items}        <li><%:${desc}%></li>\n"
+        count=$((count + 1))
+
+        # Stop after 5 items
+        if [ $count -ge 5 ]; then
+            break
+        fi
+    done < <(git log --pretty=format:"%s" -10)
+
+    echo -e "$changelog_items"
+}
+
+# Update about.htm with package information from Makefile (template-based)
+if [ -f "$PKG_SOURCE_DIR/luasrc/view/hermes/about.htm.template" ]; then
+    # Copy template to about.htm
+    cp "$PKG_SOURCE_DIR/luasrc/view/hermes/about.htm.template" "$PKG_SOURCE_DIR/luasrc/view/hermes/about.htm"
+
+    # Generate changelog
+    CHANGELOG_ITEMS=$(generate_changelog)
+
+    # Get current year for copyright
+    CURRENT_YEAR=$(date +%Y)
+
+    # Simple sed replacements - no temp files needed!
+    sed -i "s/__PKG_NAME__/$PKG_NAME/g" "$PKG_SOURCE_DIR/luasrc/view/hermes/about.htm"
+    sed -i "s/__PKG_VERSION__/$FULL_VERSION/g" "$PKG_SOURCE_DIR/luasrc/view/hermes/about.htm"
+    sed -i "s/__PKG_LICENSE__/$PKG_LICENSE/g" "$PKG_SOURCE_DIR/luasrc/view/hermes/about.htm"
+    sed -i "s/__PKG_DEVELOPER__/$DEVELOPER_NAME/g" "$PKG_SOURCE_DIR/luasrc/view/hermes/about.htm"
+    sed -i "s/__YEAR__/$CURRENT_YEAR/g" "$PKG_SOURCE_DIR/luasrc/view/hermes/about.htm"
+
+    # Replace changelog placeholder (multiline)
+    # Escape special characters for sed
+    CHANGELOG_ESCAPED=$(echo "$CHANGELOG_ITEMS" | sed 's/[&/\]/\\&/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+    sed -i "s/__CHANGELOG__/$CHANGELOG_ESCAPED/" "$PKG_SOURCE_DIR/luasrc/view/hermes/about.htm"
+fi
+
+if [ $LATEST_BUILD -eq 0 ]; then
+    echo -e "${BLUE}Build Number:${NC}  $NEW_BUILD (first build)"
+else
+    echo -e "${BLUE}Build Number:${NC}  $LATEST_BUILD → ${GREEN}$NEW_BUILD${NC} (auto-incremented)"
+fi
+echo -e "${BLUE}Makefile:${NC}     Updated PKG_RELEASE=$NEW_BUILD"
+echo -e "${BLUE}About page:${NC}   Updated version to $FULL_VERSION"
+echo -e "${BLUE}Changelog:${NC}    Auto-generated from recent git commits"
+
+# Build date
+BUILD_DATE=$(date +%Y%m%d)
+
+# Directories
+BUILD_DIR="$PROJECT_DIR/build"
+IPK_DIR="$BUILD_DIR/ipk"
+CONTROL_DIR="$IPK_DIR/CONTROL"
+DATA_DIR="$IPK_DIR/data"
+
+echo -e "${GREEN}═══════════════════════════════════════════════════${NC}"
+echo -e "${GREEN}   LuCI App Hermes eUICC - IPK Package Builder${NC}"
+echo -e "${GREEN}═══════════════════════════════════════════════════${NC}"
+echo ""
+echo -e "${BLUE}Package:${NC}       $PKG_NAME"
+echo -e "${BLUE}Version:${NC}       $FULL_VERSION"
+echo -e "${BLUE}Architecture:${NC}  $PKG_ARCH"
+
+# Clean previous build
+echo -e "${YELLOW}[1/6]${NC} Cleaning previous build..."
+rm -rf "$BUILD_DIR"
+mkdir -p "$CONTROL_DIR" "$DATA_DIR"
+
+# Create directory structure
+echo -e "${YELLOW}[2/6]${NC} Creating directory structure..."
+mkdir -p "$DATA_DIR/usr/lib/lua/luci/controller"
+mkdir -p "$DATA_DIR/usr/lib/lua/luci/model/cbi"
+mkdir -p "$DATA_DIR/usr/lib/lua/luci/view/hermes-euicc"
+mkdir -p "$DATA_DIR/www/luci-static/resources/hermes-euicc"
+mkdir -p "$DATA_DIR/etc/config"
+mkdir -p "$DATA_DIR/usr/share/menu.d"
+
+# Copy LuCI files
+echo -e "${YELLOW}[3/6]${NC} Copying LuCI application files..."
+
+# Controller
+if [ -f "$PKG_SOURCE_DIR/luasrc/controller/hermes-euicc.lua" ]; then
+    echo "  → Controller (hermes-euicc.lua)"
+    cp "$PKG_SOURCE_DIR/luasrc/controller/hermes-euicc.lua" "$DATA_DIR/usr/lib/lua/luci/controller/"
+fi
+
+# Model/CBI
+if [ -f "$PKG_SOURCE_DIR/luasrc/model/cbi/hermes-euicc.lua" ]; then
+    echo "  → Model/CBI (hermes-euicc.lua)"
+    cp "$PKG_SOURCE_DIR/luasrc/model/cbi/hermes-euicc.lua" "$DATA_DIR/usr/lib/lua/luci/model/cbi/"
+fi
+
+# Views
+if [ -d "$PKG_SOURCE_DIR/luasrc/view/hermes-euicc" ]; then
+    echo "  → Views (*.htm files)"
+    cp "$PKG_SOURCE_DIR/luasrc/view/hermes-euicc/"*.htm "$DATA_DIR/usr/lib/lua/luci/view/hermes-euicc/"
+fi
+
+# Static resources - CSS
+if [ -d "$PKG_SOURCE_DIR/htdocs/luci-static/resources/hermes-euicc/css" ]; then
+    echo "  → CSS files"
+    mkdir -p "$DATA_DIR/www/luci-static/resources/hermes-euicc/css"
+    cp "$PKG_SOURCE_DIR/htdocs/luci-static/resources/hermes-euicc/css/"*.css "$DATA_DIR/www/luci-static/resources/hermes-euicc/css/"
+fi
+
+# Static resources - JavaScript
+if [ -d "$PKG_SOURCE_DIR/htdocs/luci-static/resources/hermes-euicc/js" ]; then
+    echo "  → JavaScript files"
+    mkdir -p "$DATA_DIR/www/luci-static/resources/hermes-euicc/js"
+    cp "$PKG_SOURCE_DIR/htdocs/luci-static/resources/hermes-euicc/js/"*.js "$DATA_DIR/www/luci-static/resources/hermes-euicc/js/"
+fi
+
+# Static resources - Icons
+if [ -d "$PKG_SOURCE_DIR/htdocs/luci-static/resources/hermes-euicc/icons" ]; then
+    echo "  → Icons"
+    mkdir -p "$DATA_DIR/www/luci-static/resources/hermes-euicc/icons"
+    cp "$PKG_SOURCE_DIR/htdocs/luci-static/resources/hermes-euicc/icons/"* "$DATA_DIR/www/luci-static/resources/hermes-euicc/icons/"
+fi
+
+# Root files - UCI config
+if [ -f "$PKG_SOURCE_DIR/root/etc/config/hermes-euicc" ]; then
+    echo "  → UCI config (hermes-euicc)"
+    cp "$PKG_SOURCE_DIR/root/etc/config/hermes-euicc" "$DATA_DIR/etc/config/"
+fi
+
+# Root files - Menu definition
+if [ -f "$PKG_SOURCE_DIR/root/usr/share/menu.d/luci-app-hermes-euicc.json" ]; then
+    echo "  → Menu definition (luci-app-hermes-euicc.json)"
+    cp "$PKG_SOURCE_DIR/root/usr/share/menu.d/luci-app-hermes-euicc.json" "$DATA_DIR/usr/share/menu.d/"
+fi
+
+# Internationalization (i18n) - Compile .po to .lmo
+if [ -d "$PKG_SOURCE_DIR/po" ]; then
+    echo "  → Compiling i18n files (.po → .lmo)"
+
+    # Check if po2lmo is available
+    if command -v po2lmo >/dev/null 2>&1; then
+        mkdir -p "$DATA_DIR/usr/lib/lua/luci/i18n"
+
+        # Compile each .po file to .lmo
+        COMPILED_COUNT=0
+        for po_file in "$PKG_SOURCE_DIR/po"/*/*.po; do
+            if [ -f "$po_file" ]; then
+                # Extract language code from path (e.g., po/en/hermes-euicc.po -> en)
+                LANG=$(basename "$(dirname "$po_file")")
+                # Create .lmo filename: hermes-euicc.en.lmo
+                LMO_FILE="$DATA_DIR/usr/lib/lua/luci/i18n/hermes-euicc.$LANG.lmo"
+
+                # Compile po to lmo
+                if po2lmo "$po_file" "$LMO_FILE" 2>/dev/null; then
+                    COMPILED_COUNT=$((COMPILED_COUNT + 1))
+                else
+                    echo -e "    ${YELLOW}⚠${NC} Failed to compile: $(basename "$po_file")"
+                fi
+            fi
+        done
+
+        if [ $COMPILED_COUNT -gt 0 ]; then
+            echo "    ${GREEN}✓${NC} Compiled $COMPILED_COUNT translation file(s)"
+        fi
+    else
+        echo "    ${YELLOW}⚠${NC} po2lmo not found, skipping i18n compilation"
+        echo "    ${BLUE}ℹ${NC} Install luci-base package on build system for po2lmo"
+    fi
+fi
+
+# Verify all files have Unix line endings
+echo -e "${YELLOW}[4/6]${NC} Verifying file formats..."
+# Check .lua, .htm, .sh files and scripts in /usr/bin/
+find "$DATA_DIR" -type f \( -name "*.lua" -o -name "*.htm" -o -name "*.sh" -o -path "*/usr/bin/*" \) | while read file; do
+    # Skip binary files, only process text/script files
+    if file "$file" | grep -qE "text|script"; then
+        if file "$file" | grep -q CRLF; then
+            echo -e "  ${RED}✗${NC} Converting: $file (had Windows line endings)"
+            sed -i 's/\r$//' "$file"
+        fi
+    fi
+done
+echo -e "  ${GREEN}✓${NC} All text files have Unix line endings"
+
+# Create control file
+echo -e "${YELLOW}[5/6]${NC} Creating package metadata..."
+cat > "$CONTROL_DIR/control" << EOF
+Package: $PKG_NAME
+Version: $FULL_VERSION
+Depends: luci-base, coreutils, coreutils-timeout, uqmi, mbim-utils
+Recommends: hermes-euicc
+Section: luci
+Architecture: $PKG_ARCH
+Installed-Size: $(du -sb "$DATA_DIR" | cut -f1)
+Maintainer: $PKG_MAINTAINER
+Description: LuCI web interface for managing eSIM profiles via Hermes eUICC Manager
+ Provides a modern web interface for eSIM profile management using Hermes eUICC.
+ Features include:
+  - Profile listing, enabling, disabling, and deletion
+  - Profile download via QR code or manual entry
+  - SM-DS discovery and automatic profile download
+  - Notification management (process, remove)
+  - Support for AT, QMI, and MBIM APDU drivers
+  - Chip information display (storage, capabilities, versions)
+  - Dark mode support
+EOF
+
+echo "  → Control file created"
+
+# Create postinst script (optional - for clearing LuCI cache)
+cat > "$CONTROL_DIR/postinst" << 'EOF'
+#!/bin/sh
+# Clear LuCI cache after installation
+[ -d /tmp/luci-modulecache ] && rm -rf /tmp/luci-modulecache/* 2>/dev/null
+[ -d /tmp/luci-indexcache ] && rm -rf /tmp/luci-indexcache/* 2>/dev/null
+
+# Initialize hermes_euicc UCI config if it doesn't exist
+if [ ! -f /etc/config/hermes_euicc ]; then
+    touch /etc/config/hermes_euicc
+fi
+
+# Ensure hermes_euicc section exists with defaults
+if ! uci -q get hermes_euicc.@hermes_euicc[0] >/dev/null 2>&1; then
+    uci set hermes_euicc.hermes_euicc='hermes_euicc'
+    uci set hermes_euicc.hermes_euicc.driver='auto'
+    uci set hermes_euicc.hermes_euicc.device=''
+    uci set hermes_euicc.hermes_euicc.slot='1'
+    uci set hermes_euicc.hermes_euicc.timeout='30'
+    uci set hermes_euicc.hermes_euicc.reboot_method='at'
+    uci set hermes_euicc.hermes_euicc.reboot_at_device='/dev/ttyUSB3'
+    uci set hermes_euicc.hermes_euicc.reboot_at_command='AT+CFUN=1,1'
+    uci set hermes_euicc.hermes_euicc.reboot_qmi_device='/dev/cdc-wdm0'
+    uci set hermes_euicc.hermes_euicc.reboot_qmi_slot='1'
+    uci set hermes_euicc.hermes_euicc.reboot_mbim_device='/dev/cdc-wdm0'
+    uci set hermes_euicc.hermes_euicc.reboot_custom_command='echo "Custom reboot command"'
+    uci set hermes_euicc.hermes_euicc.enable_bulk_notification='0'
+    uci commit hermes_euicc
+fi
+
+exit 0
+EOF
+chmod 755 "$CONTROL_DIR/postinst"
+echo "  → Post-install script created"
+
+# Create prerm script (optional - for cleanup before removal)
+cat > "$CONTROL_DIR/prerm" << 'EOF'
+#!/bin/sh
+# Clear LuCI cache before removal
+[ -d /tmp/luci-modulecache ] && rm -rf /tmp/luci-modulecache/* 2>/dev/null
+[ -d /tmp/luci-indexcache ] && rm -rf /tmp/luci-indexcache/* 2>/dev/null
+
+# Clean up reboot flags if they exist
+rm -f /tmp/hermes_euicc_reboot_needed 2>/dev/null
+rm -f /tmp/hermes_euicc_reboot_reason 2>/dev/null
+
+exit 0
+EOF
+chmod 755 "$CONTROL_DIR/prerm"
+echo "  → Pre-removal script created"
+
+# Build IPK package
+echo -e "${YELLOW}[6/6]${NC} Building IPK package..."
+
+cd "$IPK_DIR"
+
+# Create debian-binary
+echo "2.0" > debian-binary
+
+# Create control.tar.gz
+# Important: Must be created from CONTROL directory, not including CONTROL itself
+# Order: debian-binary, control.tar.gz, data.tar.gz (CRITICAL!)
+tar -C CONTROL -czf control.tar.gz --owner=0 --group=0 --numeric-owner .
+
+# Verify control.tar.gz was created
+if [ ! -f control.tar.gz ]; then
+    echo -e "${RED}ERROR: Failed to create control.tar.gz${NC}"
+    exit 1
+fi
+
+# Create data.tar.gz
+# Important: Must be created from data directory, not including data itself
+tar -C data -czf data.tar.gz --owner=0 --group=0 --numeric-owner .
+
+# Verify data.tar.gz was created
+if [ ! -f data.tar.gz ]; then
+    echo -e "${RED}ERROR: Failed to create data.tar.gz${NC}"
+    exit 1
+fi
+
+# Create IPK (tar.gz archive, NOT ar!)
+IPK_FILE="$PROJECT_DIR/${PKG_NAME}_${FULL_VERSION}_${PKG_ARCH}.ipk"
+
+# Remove old IPK if exists
+rm -f "$IPK_FILE"
+
+# Create IPK using tar (like the working example)
+# CRITICAL: Order must be: debian-binary, control.tar.gz, data.tar.gz
+tar -czf "$IPK_FILE" debian-binary control.tar.gz data.tar.gz
+
+# Verify IPK was created properly
+if [ ! -f "$IPK_FILE" ]; then
+    echo -e "${RED}ERROR: Failed to create IPK package${NC}"
+    exit 1
+fi
+
+# Verify IPK structure
+echo -e "${BLUE}Verifying IPK structure...${NC}"
+IPK_CONTENTS=$(tar -tzf "$IPK_FILE" 2>/dev/null | head -3)
+EXPECTED_ORDER="debian-binary
+control.tar.gz
+data.tar.gz"
+
+if [ "$IPK_CONTENTS" != "$EXPECTED_ORDER" ]; then
+    echo -e "${RED}ERROR: IPK has incorrect structure!${NC}"
+    echo -e "${RED}Expected:${NC}"
+    echo "$EXPECTED_ORDER"
+    echo -e "${RED}Got:${NC}"
+    echo "$IPK_CONTENTS"
+    exit 1
+fi
+
+echo -e "${GREEN}✓${NC} IPK structure verified (correct order)"
+
+# Count i18n files before cleanup
+I18N_COUNT=$(find "$DATA_DIR/usr/lib/lua/luci/i18n" -name "hermes-euicc.*.lmo" 2>/dev/null | wc -l)
+
+# Cleanup build directory
+cd "$PROJECT_DIR"
+rm -rf "$BUILD_DIR"
+
+# Display results
+echo ""
+echo -e "${GREEN}═══════════════════════════════════════════════════${NC}"
+echo -e "${GREEN}   BUILD SUCCESSFUL!${NC}"
+echo -e "${GREEN}═══════════════════════════════════════════════════${NC}"
+echo ""
+echo -e "${BLUE}Package Details:${NC}"
+echo -e "  Name:         ${PKG_NAME}_${FULL_VERSION}_${PKG_ARCH}.ipk"
+echo -e "  Size:         $(du -h "$IPK_FILE" | cut -f1)"
+echo -e "  Location:     $IPK_FILE"
+echo ""
+echo -e "${BLUE}Contents:${NC}"
+echo -e "  ✓ Controller:  /usr/lib/lua/luci/controller/hermes-euicc.lua"
+echo -e "  ✓ Model:       /usr/lib/lua/luci/model/cbi/hermes-euicc.lua"
+echo -e "  ✓ Views:       /usr/lib/lua/luci/view/hermes-euicc/*.htm"
+echo -e "  ✓ JavaScript:  9 files in /www/luci-static/resources/hermes-euicc/js/"
+echo -e "  ✓ CSS:         /www/luci-static/resources/hermes-euicc/css/hermes-euicc.css"
+echo -e "  ✓ UCI Config:  /etc/config/hermes-euicc"
+
+# Show i18n files if any were compiled
+if [ $I18N_COUNT -gt 0 ]; then
+    echo -e "  ✓ i18n:        $I18N_COUNT language(s) in /usr/lib/lua/luci/i18n/"
+fi
+echo ""
+echo -e "${BLUE}Installation:${NC}"
+echo -e "  opkg install $IPK_FILE"
+echo ""
+echo -e "${BLUE}Web Access:${NC}"
+echo -e "  http://router-ip/cgi-bin/luci/admin/modem/hermes-euicc"
+echo ""
+echo -e "${GREEN}═══════════════════════════════════════════════════${NC}"
+
+# Auto-commit all changes to git
+echo ""
+echo -e "${YELLOW}[7/7]${NC} Committing changes to git..."
+
+# Check if we're in a git repository
+if git rev-parse --git-dir > /dev/null 2>&1; then
+    # Check for any changes in the working directory
+    if git diff --quiet && git diff --cached --quiet; then
+        echo -e "  ${BLUE}ℹ${NC} No changes to commit"
+    else
+        # Get list of modified/added files for commit message
+        CHANGED_FILES=$(git status --porcelain | grep -E '^\s*M|^\s*A|^M|^A' | awk '{print $2}' | sort | uniq)
+
+        # Stage all changes in luci-app-hermes-euicc directory
+        git add "$PROJECT_DIR" 2>/dev/null
+
+        # Check if there are changes after staging
+        if git diff --cached --quiet; then
+            echo -e "  ${BLUE}ℹ${NC} No changes to commit after staging"
+        else
+            # Create commit message with file list
+            COMMIT_MSG="🔖 chore: build version $FULL_VERSION
+
+Auto-generated commit from build script.
+
+Changes:
+- Updated PKG_RELEASE to $PKG_RELEASE in Makefile
+- Updated version display in about.htm to $FULL_VERSION
+- Auto-generated changelog from recent commits
+
+Modified files:"
+
+            # Add each changed file to commit message
+            while IFS= read -r file; do
+                if [[ $file == *"$PROJECT_DIR"* ]]; then
+                    COMMIT_MSG="$COMMIT_MSG
+- ${file#$PROJECT_DIR/}"
+                fi
+            done <<< "$CHANGED_FILES"
+
+            # Create the commit
+            git commit -m "$COMMIT_MSG"
+
+            if [ $? -eq 0 ]; then
+                echo -e "  ${GREEN}✓${NC} All changes committed successfully"
+                echo -e "  ${BLUE}Commit:${NC}       $(git log -1 --pretty=format:'%h - %s')"
+            else
+                echo -e "  ${RED}✗${NC} Failed to commit changes"
+            fi
+        fi
+    fi
+else
+    echo -e "  ${BLUE}ℹ${NC} Not a git repository, skipping commit"
+fi
+
+echo ""
+echo -e "${GREEN}═══════════════════════════════════════════════════${NC}"

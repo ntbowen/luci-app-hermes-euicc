@@ -1,0 +1,339 @@
+# hermes-euicc.po - English Translation
+# Copyright (C) 2025
+# This file is distributed under the same license as the luci-app-hermes-euicc package.
+#
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: luci-app-hermes-euicc\n"
+"PO-Revision-Date: 2025-11-02\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "APDU Backend"
+msgstr "APDU Backend"
+
+msgid "AT Command"
+msgstr "AT Command"
+
+msgid "AT Device"
+msgstr "AT Device"
+
+msgid "AT Device for Reboot"
+msgstr "AT Device for Reboot"
+
+msgid "AT Reset Command"
+msgstr "AT Reset Command"
+
+msgid "AT command to reset the modem (default: AT+CFUN=1,1)"
+msgstr "AT command to reset the modem (default: AT+CFUN=1,1)"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Activation Code"
+msgstr "Activation Code"
+
+msgid "An internet connection is required to download and manage eSIM profiles. Please check your WAN connection."
+msgstr "An internet connection is required to download and manage eSIM profiles. Please check your WAN connection."
+
+msgid "Basic Information"
+msgstr "Basic Information"
+
+msgid "Bulk Notification Processing"
+msgstr "Bulk Notification Processing"
+
+msgid "Check Again"
+msgstr "Check Again"
+
+msgid "Checking internet connection..."
+msgstr "Checking internet connection..."
+
+msgid "Choose how to restart the modem when eSIM profiles are enabled"
+msgstr "Choose how to restart the modem when eSIM profiles are enabled"
+
+msgid "Clear"
+msgstr "Clear"
+
+msgid "Clear All"
+msgstr "Clear All"
+
+msgid "Configuration"
+msgstr "Configuration"
+
+msgid "Confirmation Code"
+msgstr "Confirmation Code"
+
+msgid "Custom Command"
+msgstr "Custom Command"
+
+msgid "Decoding QR code..."
+msgstr "Decoding QR code..."
+
+msgid "Detailed Chip Information"
+msgstr "Detailed Chip Information"
+
+msgid "Device Settings"
+msgstr "Device Settings"
+
+msgid "Disabled"
+msgstr "Disabled"
+
+msgid "Discover & Download"
+msgstr "Discover & Download"
+
+msgid "Download Profile"
+msgstr "Download Profile"
+
+msgid "Downloading profile..."
+msgstr "Downloading profile..."
+
+msgid "EID"
+msgstr "EID"
+
+msgid "Enable JSON Output on Download and Notifications Tabs"
+msgstr "Enable JSON Output on Download and Notifications Tabs"
+
+msgid "Enable MBIM proxy for MBIM APDU backend"
+msgstr "Enable MBIM proxy for MBIM APDU backend"
+
+msgid "Enable Output Logs"
+msgstr "Enable Output Logs"
+
+msgid "Enable bulk selection and processing of multiple notifications at once"
+msgstr "Enable bulk selection and processing of multiple notifications at once"
+
+msgid "Enabled"
+msgstr "Enabled"
+
+msgid "Enter Activation Code"
+msgstr "Enter Activation Code"
+
+msgid "Enter SM-DP+ server address"
+msgstr "Enter SM-DP+ server address"
+
+msgid "Enter your custom shell command to reboot the modem"
+msgstr "Enter your custom shell command to reboot the modem"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Firmware Version"
+msgstr "Firmware Version"
+
+msgid "Free Non-Volatile Memory"
+msgstr "Free Non-Volatile Memory"
+
+msgid "Free Volatile Memory"
+msgstr "Free Volatile Memory"
+
+msgid "Global Settings"
+msgstr "Global Settings"
+
+msgid "ICCID"
+msgstr "ICCID"
+
+msgid "IMEI"
+msgstr "IMEI"
+
+msgid "Installed Applications"
+msgstr "Installed Applications"
+
+msgid "Internet connection available"
+msgstr "Internet connection available"
+
+msgid "Leave empty to use default GSMA SM-DS server"
+msgstr "Leave empty to use default GSMA SM-DS server"
+
+msgid "Loading"
+msgstr "Loading"
+
+msgid "Loading chip information..."
+msgstr "Loading chip information..."
+
+msgid "Loading configuration..."
+msgstr "Loading configuration..."
+
+msgid "Loading eSIM information..."
+msgstr "Loading eSIM information..."
+
+msgid "Loading notifications..."
+msgstr "Loading notifications..."
+
+msgid "MBIM Command"
+msgstr "MBIM Command"
+
+msgid "MBIM Device"
+msgstr "MBIM Device"
+
+msgid "MBIM Device for Reboot"
+msgstr "MBIM Device for Reboot"
+
+msgid "MBIM device to use for UICC reset"
+msgstr "MBIM device to use for UICC reset"
+
+msgid "MBIM device used by MBIM APDU backend"
+msgstr "MBIM device used by MBIM APDU backend"
+
+msgid "Manage eSIM profiles using lpac"
+msgstr "Manage eSIM profiles using lpac"
+
+msgid "Manual Download"
+msgstr "Manual Download"
+
+msgid "Memory Information"
+msgstr "Memory Information"
+
+msgid "Modem Reboot Settings"
+msgstr "Modem Reboot Settings"
+
+msgid "No activation code? Let us automatically discover and download available profiles from SM-DS!"
+msgstr "No activation code? Let us automatically discover and download available profiles from SM-DS!"
+
+msgid "No internet connection detected"
+msgstr "No internet connection detected"
+
+msgid "No pending notifications"
+msgstr "No pending notifications"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "OR"
+msgstr "OR"
+
+msgid "Operation"
+msgstr "Operation"
+
+msgid "Optional Confirmation Code"
+msgstr "Optional Confirmation Code"
+
+msgid "Output Logs"
+msgstr "Output Logs"
+
+msgid "Pending Notifications"
+msgstr "Pending Notifications"
+
+msgid "Preview"
+msgstr "Preview"
+
+msgid "Profile Version"
+msgstr "Profile Version"
+
+msgid "Profiles"
+msgstr "Profiles"
+
+msgid "Provider"
+msgstr "Provider"
+
+msgid "QMI Commands"
+msgstr "QMI Commands"
+
+msgid "QMI Device"
+msgstr "QMI Device"
+
+msgid "QMI Device for Reboot"
+msgstr "QMI Device for Reboot"
+
+msgid "QMI SIM Slot"
+msgstr "QMI SIM Slot"
+
+msgid "QMI SIM Slot for Reboot"
+msgstr "QMI SIM Slot for Reboot"
+
+msgid "QMI device to use for SIM power cycle"
+msgstr "QMI device to use for SIM power cycle"
+
+msgid "QMI device used by QMI APDU backend"
+msgstr "QMI device used by QMI APDU backend"
+
+msgid "QR Activation Code"
+msgstr "QR Activation Code"
+
+msgid "QR Code Image"
+msgstr "QR Code Image"
+
+msgid "QR Code Upload"
+msgstr "QR Code Upload"
+
+msgid "QR Code decoded successfully!"
+msgstr "QR Code decoded successfully!"
+
+msgid "Quick Download from SM-DS"
+msgstr "Quick Download from SM-DS"
+
+msgid "Reboot Method"
+msgstr "Reboot Method"
+
+msgid "Required for some operators"
+msgstr "Required for some operators"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "SIM slot number for QMI operations (1 or 2)"
+msgstr "SIM slot number for QMI operations (1 or 2)"
+
+msgid "SIM slot number for QMI reboot operations"
+msgstr "SIM slot number for QMI reboot operations"
+
+msgid "SM-DP+ Server Address"
+msgstr "SM-DP+ Server Address"
+
+msgid "SM-DS Server"
+msgstr "SM-DS Server"
+
+msgid "SVN"
+msgstr "SVN"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Save & Apply"
+msgstr "Save & Apply"
+
+msgid "Searching for profiles and downloading..."
+msgstr "Searching for profiles and downloading..."
+
+msgid "Select which APDU backend will be used for eSIM communication"
+msgstr "Select which APDU backend will be used for eSIM communication"
+
+msgid "Sequence"
+msgstr "Sequence"
+
+msgid "Serial port device used by AT APDU backend"
+msgstr "Serial port device used by AT APDU backend"
+
+msgid "Serial port device used for SIM power cycle"
+msgstr "Serial port device used for SIM power cycle"
+
+msgid "Slot 1"
+msgstr "Slot 1"
+
+msgid "Slot 2"
+msgstr "Slot 2"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Success"
+msgstr "Success"
+
+msgid "Upload a JPG or PNG image containing the QR code - it will be decoded automatically"
+msgstr "Upload a JPG or PNG image containing the QR code - it will be decoded automatically"
+
+msgid "Use MBIM Proxy"
+msgstr "Use MBIM Proxy"
+
+msgid "You can manage eSIM profiles"
+msgstr "You can manage eSIM profiles"
+
+msgid "eSIM Info"
+msgstr "eSIM Info"
+
+msgid "eSIM Profile Manager"
+msgstr "eSIM Profile Manager"
+
+msgid "optional"
+msgstr "optional"

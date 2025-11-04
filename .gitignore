@@ -1,0 +1,6 @@
+.DS_Store
+*.log
+
+# Build artifacts
+*.ipk
+build/

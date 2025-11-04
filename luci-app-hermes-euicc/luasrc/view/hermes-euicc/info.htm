@@ -1,0 +1,113 @@
+<%+header%>
+
+<!-- eSIM Connectivity Banner -->
+<div id="esim-connectivity-banner" class="mb-20">
+    <div id="connectivity-checking" class="info-box">
+        <i class="icon-spinner"></i> <strong><%:Checking internet connection...%></strong>
+    </div>
+
+    <div id="connectivity-online" class="success-box">
+        <i class="icon-ok"></i> <strong><%:Internet connection available%></strong> - <%:You can manage eSIM profiles%>
+    </div>
+
+    <div id="connectivity-offline" class="error-box">
+        <i class="icon-remove"></i> <strong><%:No internet connection detected%></strong> - <%:An internet connection is required to download and manage eSIM profiles. Please check your WAN connection.%>
+        <br><br>
+        <button type="button" class="cbi-button cbi-button-apply" onclick="checkConnectivity()"><%:Check Again%></button>
+    </div>
+</div>
+
+<h2 name="content"><%:eSIM Info%></h2>
+<div class="cbi-map-descr"><%:View basic information and detailed chip specifications for your eSIM%></div>
+
+<div id="esim-info-loading" class="loading-container">
+    <img src="<%=resource%>/hermes-euicc/icons/loading.gif" alt="<%:Loading%>" class="v-align-middle" />
+    <%:Loading eSIM information...%>
+</div>
+
+    <div id="esim-info-content" class="hidden">
+        <fieldset class="cbi-section">
+            <legend><%:Basic Information%></legend>
+            <table class="cbi-section-table">
+                <tr>
+                    <td class="width-150 font-bold"><%:EID%>:</td>
+                    <td id="esim-eid">-</td>
+                </tr>
+                <tr>
+                    <td class="font-bold"><%:Profile Version%>:</td>
+                    <td id="esim-profile-version">-</td>
+                </tr>
+                <tr>
+                    <td class="font-bold"><%:SVN%>:</td>
+                    <td id="esim-svn">-</td>
+                </tr>
+                <tr>
+                    <td class="font-bold"><%:Firmware Version%>:</td>
+                    <td id="esim-firmware">-</td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <fieldset class="cbi-section">
+            <legend><%:Memory Information%></legend>
+            <table class="cbi-section-table">
+                <tr>
+                    <td class="width-150 font-bold"><%:Free Non-Volatile Memory%>:</td>
+                    <td id="esim-nv-memory">-</td>
+                </tr>
+                <tr>
+                    <td class="font-bold"><%:Free Volatile Memory%>:</td>
+                    <td id="esim-v-memory">-</td>
+                </tr>
+                <tr>
+                    <td class="font-bold"><%:Installed Applications%>:</td>
+                    <td id="esim-apps">-</td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <!-- Detailed Chip Information Section -->
+        <div id="chip-info-section" class="mt-20">
+            <h3><%:Detailed Chip Information%></h3>
+
+            <div id="chip-info-loading" class="loading-container">
+                <img src="<%=resource%>/hermes-euicc/icons/loading.gif" alt="<%:Loading%>" class="v-align-middle" />
+                <%:Loading chip information...%>
+            </div>
+
+            <div id="chip-info-content" class="hidden">
+                <div id="storage-info"></div>
+                <div id="capabilities-info"></div>
+                <div id="version-info"></div>
+            </div>
+
+            <div id="chip-info-error" class="error-message mt-10">
+                <strong><%:Error%>:</strong> <span id="chip-info-error-message"></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="esim-info-error" class="error-message">
+        <strong><%:Error%>:</strong> <span id="esim-error-message"></span>
+    </div>
+
+<div class="cbi-page-custom-actions">
+    <input type="button" class="cbi-button notification-action-btn refresh-btn" value="Refresh" onclick="loadESIMInfo()" />
+</div>
+
+<link rel="stylesheet" type="text/css" href="<%=resource%>/hermes-euicc/css/hermes-euicc.css" />
+<script type="text/javascript" src="<%=resource%>/hermes-euicc/js/hermes-connectivity.js"></script>
+<script type="text/javascript" src="<%=resource%>/hermes-euicc/js/hermes-info.js"></script>
+<script type="text/javascript" src="<%=resource%>/hermes-euicc/js/hermes-chip-info.js"></script>
+<script type="text/javascript">
+    // Initialize page when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(loadESIMInfo, 100);
+        });
+    } else {
+        setTimeout(loadESIMInfo, 100);
+    }
+</script>
+
+<%+footer%>

@@ -1,0 +1,16 @@
+{
+	"admin/modem/hermes-euicc": {
+		"title": "eSIM Profile Manager",
+		"order": 60,
+		"action": {
+			"type": "cbi",
+			"path": "hermes-euicc",
+			"post": {
+				"cbi.submit": true
+			}
+		},
+		"depends": {
+			"acl": [ "luci-app-hermes-euicc" ]
+		}
+	}
+}

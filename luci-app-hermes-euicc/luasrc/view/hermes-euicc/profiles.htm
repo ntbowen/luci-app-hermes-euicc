@@ -1,0 +1,88 @@
+<%+header%>
+
+<!-- eSIM Connectivity Banner -->
+<div id="esim-connectivity-banner" class="mb-20">
+    <div id="connectivity-checking" class="info-box">
+        <i class="icon-spinner"></i> <strong><%:Checking internet connection...%></strong>
+    </div>
+
+    <div id="connectivity-online" class="success-box">
+        <i class="icon-ok"></i> <strong><%:Internet connection available%></strong> - <%:You can manage eSIM profiles%>
+    </div>
+
+    <div id="connectivity-offline" class="error-box">
+        <i class="icon-remove"></i> <strong><%:No internet connection detected%></strong> - <%:An internet connection is required to download and manage eSIM profiles. Please check your WAN connection.%>
+        <br><br>
+        <button type="button" class="cbi-button cbi-button-apply" onclick="checkConnectivity()"><%:Check Again%></button>
+    </div>
+</div>
+
+<h2 name="content"><%:Profiles%></h2>
+<div class="cbi-map-descr"><%:Manage installed eSIM profiles - enable, disable, rename, or delete%></div>
+
+<div id="profiles-loading" class="loading-container">
+    <img src="<%=resource%>/hermes-euicc/icons/loading.gif" alt="Loading" class="v-align-middle" />
+    Loading profiles...
+</div>
+
+<div id="profiles-content" class="hidden">
+    <fieldset class="cbi-section">
+        <legend>Installed Profiles</legend>
+        <div class="cbi-section-node">
+            <div class="table-responsive">
+                <table class="cbi-section-table" id="profiles-table">
+                    <thead>
+                        <tr class="cbi-section-table-titles">
+                            <th class="cbi-section-table-cell">Profile Name</th>
+                            <th class="cbi-section-table-cell">ICCID</th>
+                            <th class="cbi-section-table-cell">Provider</th>
+                            <th class="cbi-section-table-cell table-cell-center">Status</th>
+                            <th class="cbi-section-table-cell table-cell-center table-cell-min-width">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profiles-tbody">
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div id="no-profiles" class="no-items-message">
+                No profiles installed
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+<div id="profiles-error" class="error-message">
+    <strong>Error:</strong> <span id="profiles-error-message"></span>
+</div>
+
+<div id="profile-notifications-status" class="mt-20">
+    <div id="profile-notifications-success" class="success-box">
+        <strong><%:Status%>:</strong> <span id="profile-notifications-success-message"></span>
+    </div>
+
+    <div id="profile-notifications-error" class="error-box">
+        <strong><%:Error%>:</strong> <span id="profile-notifications-error-message"></span>
+    </div>
+</div>
+
+<div class="cbi-page-custom-actions">
+    <input type="button" class="cbi-button notification-action-btn refresh-btn" value="Refresh" onclick="loadProfiles()" />
+</div>
+
+<link rel="stylesheet" type="text/css" href="<%=resource%>/hermes-euicc/css/hermes-euicc.css" />
+<script type="text/javascript" src="<%=resource%>/hermes-euicc/js/hermes-connectivity.js"></script>
+<script type="text/javascript" src="<%=resource%>/hermes-euicc/js/hermes-profiles.js"></script>
+<script type="text/javascript">
+    // Initialize page when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(loadProfiles, 100);
+        });
+    } else {
+        setTimeout(loadProfiles, 100);
+    }
+</script>
+
+<%+footer%>
