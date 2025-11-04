@@ -36,12 +36,12 @@ function loadESIMInfo() {
                     loadChipInfoIfNeeded();
 
                 } else {
-                    var errorMsg = data.error || data.message || 'Unknown error';
+                    var errorMsg = data.error || data.message || _('Unknown error');
                     document.getElementById('esim-error-message').textContent = errorMsg;
                     document.getElementById('esim-info-error').style.display = 'block';
                 }
             } else {
-                document.getElementById('esim-error-message').textContent = 'Failed to load eSIM information';
+                document.getElementById('esim-error-message').textContent = _('Failed to load eSIM information');
                 document.getElementById('esim-info-error').style.display = 'block';
             }
         }

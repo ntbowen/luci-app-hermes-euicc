@@ -691,3 +691,6 @@ msgstr ""
 
 msgid "Failed to download profile (HTTP "
 msgstr ""
+
+msgid "Failed to load eSIM information"
+msgstr ""
