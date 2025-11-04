@@ -8,7 +8,7 @@ PKG_RELEASE:=49
 PKG_MAINTAINER:=Giammarco M. <stich86@gmail.com>
 PKG_LICENSE:=AGPL-3.0-only
 
-LUCI_TITLE:=LuCI eSIM Profile Manager
+LUCI_TITLE:=LuCI Hermes eUICC - eSIM Profile Manager
 LUCI_DESCRIPTION:=LuCI web interface for managing eSIM profiles via Hermes eUICC Manager. \
  Provides a modern web interface for eSIM profile management using Hermes eUICC. \
  Features include: \
