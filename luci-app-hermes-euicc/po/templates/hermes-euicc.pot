@@ -619,3 +619,9 @@ msgstr ""
 
 msgid "BER-TLV Support"
 msgstr ""
+
+msgid "Failed to load configuration"
+msgstr ""
+
+msgid "Failed to save configuration"
+msgstr ""

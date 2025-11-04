@@ -143,11 +143,11 @@ function loadConfig() {
                     populateForm(data.config);
                     var el = document.getElementById('config-content'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
                 } else {
-                    document.getElementById('config-error-message').textContent = data.error || 'Unknown error';
+                    document.getElementById('config-error-message').textContent = data.error || _('Unknown error');
                     var el = document.getElementById('config-error'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
                 }
             } else {
-                document.getElementById('config-error-message').textContent = 'Failed to load configuration';
+                document.getElementById('config-error-message').textContent = _('Failed to load configuration');
                 var el = document.getElementById('config-error'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
             }
         }
@@ -365,12 +365,12 @@ function saveConfig() {
                     currentConfig = config;
                 } else {
                     // Error: show error message
-                    document.getElementById('config-error-message').textContent = data.error || 'Unknown error';
+                    document.getElementById('config-error-message').textContent = data.error || _('Unknown error');
                     var el = document.getElementById('config-error'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
                 }
             } else {
                 // Network error: show error message
-                document.getElementById('config-error-message').textContent = 'Failed to save configuration';
+                document.getElementById('config-error-message').textContent = _('Failed to save configuration');
                 var el = document.getElementById('config-error'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
             }
         }

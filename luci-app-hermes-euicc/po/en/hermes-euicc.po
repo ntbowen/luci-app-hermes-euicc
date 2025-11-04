@@ -619,3 +619,9 @@ msgstr "Generic Bootstrapping Architecture"
 
 msgid "BER-TLV Support"
 msgstr "BER-TLV Support"
+
+msgid "Failed to load configuration"
+msgstr "Failed to load configuration"
+
+msgid "Failed to save configuration"
+msgstr "Failed to save configuration"
