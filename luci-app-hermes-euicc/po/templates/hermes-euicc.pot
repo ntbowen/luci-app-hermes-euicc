@@ -119,6 +119,36 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+msgid "Error during restart"
+msgstr ""
+
+msgid "Unknown error"
+msgstr ""
+
+msgid "Failed to change profile name"
+msgstr ""
+
+msgid "Failed to delete profile"
+msgstr ""
+
+msgid "Failed to restart modem. Please try manually from System → Reboot."
+msgstr ""
+
+msgid "Failed to toggle profile"
+msgstr ""
+
+msgid "AT device path must start with /dev/"
+msgstr ""
+
+msgid "MBIM device path must start with /dev/"
+msgstr ""
+
+msgid "QMI SIM slot must be 1 or 2"
+msgstr ""
+
+msgid "QMI device path must start with /dev/"
+msgstr ""
+
 msgid "Firmware Version"
 msgstr ""
 

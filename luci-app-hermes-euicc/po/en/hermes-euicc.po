@@ -119,6 +119,36 @@ msgstr "Enter your custom shell command to reboot the modem"
 msgid "Error"
 msgstr "Error"
 
+msgid "Error during restart"
+msgstr "Error during restart"
+
+msgid "Unknown error"
+msgstr "Unknown error"
+
+msgid "Failed to change profile name"
+msgstr "Failed to change profile name"
+
+msgid "Failed to delete profile"
+msgstr "Failed to delete profile"
+
+msgid "Failed to restart modem. Please try manually from System → Reboot."
+msgstr "Failed to restart modem. Please try manually from System → Reboot."
+
+msgid "Failed to toggle profile"
+msgstr "Failed to toggle profile"
+
+msgid "AT device path must start with /dev/"
+msgstr "AT device path must start with /dev/"
+
+msgid "MBIM device path must start with /dev/"
+msgstr "MBIM device path must start with /dev/"
+
+msgid "QMI SIM slot must be 1 or 2"
+msgstr "QMI SIM slot must be 1 or 2"
+
+msgid "QMI device path must start with /dev/"
+msgstr "QMI device path must start with /dev/"
+
 msgid "Firmware Version"
 msgstr "Firmware Version"
 
