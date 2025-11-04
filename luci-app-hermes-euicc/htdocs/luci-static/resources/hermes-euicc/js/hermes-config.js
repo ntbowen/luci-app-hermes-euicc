@@ -248,25 +248,25 @@ function validateConfig() {
     if (backend === 'at') {
         var atDevice = document.getElementById('at_device').value;
         if (!validateDevicePath(atDevice)) {
-            alert('AT device path must start with /dev/');
+            alert(_('AT device path must start with /dev/'));
             return false;
         }
     } else if (backend === 'uqmi') {
         var qmiDevice = document.getElementById('qmi_device').value;
         if (!validateDevicePath(qmiDevice)) {
-            alert('QMI device path must start with /dev/');
+            alert(_('QMI device path must start with /dev/'));
             return false;
         }
-        
+
         var qmiSlot = document.getElementById('qmi_sim_slot').value;
         if (!validateSimSlot(qmiSlot)) {
-            alert('QMI SIM slot must be 1 or 2');
+            alert(_('QMI SIM slot must be 1 or 2'));
             return false;
         }
     } else if (backend === 'mbim') {
         var mbimDevice = document.getElementById('mbim_device').value;
         if (!validateDevicePath(mbimDevice)) {
-            alert('MBIM device path must start with /dev/');
+            alert(_('MBIM device path must start with /dev/'));
             return false;
         }
     }

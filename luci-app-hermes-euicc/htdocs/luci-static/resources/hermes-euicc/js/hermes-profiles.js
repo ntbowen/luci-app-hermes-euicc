@@ -510,11 +510,11 @@ function toggleProfile(iccid, action, profileName) {
                     loadProfiles();
                 } else {
                     button.value = originalText;
-                    alert('Error: ' + (data.error || 'Unknown error'));
+                    alert(_('Error') + ': ' + (data.error || _('Unknown error')));
                 }
             } else {
                 button.value = originalText;
-                alert('Failed to toggle profile');
+                alert(_('Failed to toggle profile'));
             }
         }
     };
@@ -574,10 +574,10 @@ function changeProfileName(iccid, newName) {
                     // Reload profiles list to update name
                     loadProfiles();
                 } else {
-                    alert('Error: ' + (data.error || 'Unknown error'));
+                    alert(_('Error') + ': ' + (data.error || _('Unknown error')));
                 }
             } else {
-                alert('Failed to change profile name');
+                alert(_('Failed to change profile name'));
             }
         }
     };
@@ -603,10 +603,10 @@ function deleteProfile(iccid) {
                     loadProfiles();
                     showEsimDeleteNotificationBanner();
                 } else {
-                    alert('Error: ' + (data.error || 'Unknown error'));
+                    alert(_('Error') + ': ' + (data.error || _('Unknown error')));
                 }
             } else {
-                alert('Failed to delete profile');
+                alert(_('Failed to delete profile'));
             }
         }
     };
@@ -669,12 +669,12 @@ function rebootModem() {
                 } else {
                     // Error during reboot
                     document.body.removeChild(rebootMessage);
-                    alert('Error during restart: ' + (data.error || 'Unknown error'));
+                    alert(_('Error during restart') + ': ' + (data.error || _('Unknown error')));
                 }
             } else {
                 // Network error during reboot
                 document.body.removeChild(rebootMessage);
-                alert('Failed to restart modem. Please try manually from System → Reboot.');
+                alert(_('Failed to restart modem. Please try manually from System → Reboot.'));
             }
         }
     };
