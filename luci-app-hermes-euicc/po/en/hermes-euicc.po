@@ -625,3 +625,45 @@ msgstr "Failed to load configuration"
 
 msgid "Failed to save configuration"
 msgstr "Failed to save configuration"
+
+msgid "Warning: Low storage!"
+msgstr "Warning: Low storage!"
+
+msgid "Available:"
+msgstr "Available:"
+
+msgid "Recommended:"
+msgstr "Recommended:"
+
+msgid "minimum"
+msgstr "minimum"
+
+msgid "Profile installation may fail due to insufficient storage."
+msgstr "Profile installation may fail due to insufficient storage."
+
+msgid "Do you want to continue anyway?"
+msgstr "Do you want to continue anyway?"
+
+msgid "Profile download completed successfully"
+msgstr "Profile download completed successfully"
+
+msgid "Unknown error occurred"
+msgstr "Unknown error occurred"
+
+msgid "Invalid response format"
+msgstr "Invalid response format"
+
+msgid "Failed to download profile (HTTP "
+msgstr "Failed to download profile (HTTP "
+
+msgid "Profile downloaded successfully! Please reboot modem to activate."
+msgstr "Profile downloaded successfully! Please reboot modem to activate."
+
+msgid "No profiles available for this device from SM-DS."
+msgstr "No profiles available for this device from SM-DS."
+
+msgid "Discovery failed"
+msgstr "Discovery failed"
+
+msgid "Request failed (HTTP "
+msgstr "Request failed (HTTP "

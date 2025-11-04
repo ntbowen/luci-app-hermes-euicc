@@ -180,13 +180,13 @@ function checkStorageBeforeDownload(callback) {
 
                         // Check if storage is low (less than 500KB)
                         if (freeBytes < 512000) {
-                            var msg = 'Warning: Low storage!\n\n' +
-                                'Available: ' + freeKB + ' KB (' + freeMB + ' MB)\n' +
-                                'Recommended: 500 KB minimum\n\n' +
-                                'Profile installation may fail due to insufficient storage.\n\n' +
-                                'Do you want to continue anyway?';
+                            var msg = _('Warning: Low storage!') + '\n\n' +
+                                _('Available:') + ' ' + freeKB + ' KB (' + freeMB + ' MB)\n' +
+                                _('Recommended:') + ' 500 KB ' + _('minimum') + '\n\n' +
+                                _('Profile installation may fail due to insufficient storage.') + '\n\n' +
+                                _('Do you want to continue anyway?');
 
-                            if (confirm(_(msg))) {
+                            if (confirm(msg)) {
                                 callback(true);
                             } else {
                                 callback(false);
@@ -231,7 +231,7 @@ function proceedWithDownload(smdpServerAddress, QRactivationCode, activationCode
                     var data = JSON.parse(xhr.responseText);
 
                     if (data.success) {
-                        var successMessage = 'Profile download completed successfully';
+                        var successMessage = _('Profile download completed successfully');
                         document.getElementById('download-success-message').textContent = successMessage;
                         var el = document.getElementById('download-success'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
 
@@ -246,7 +246,7 @@ function proceedWithDownload(smdpServerAddress, QRactivationCode, activationCode
                             }
                         }, 2000);
                     } else {
-                        var errorMessage = data.error || 'Unknown error occurred';
+                        var errorMessage = data.error || _('Unknown error occurred');
                         document.getElementById('download-error-message').textContent = errorMessage;
                         var el = document.getElementById('download-error'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
 
@@ -256,12 +256,12 @@ function proceedWithDownload(smdpServerAddress, QRactivationCode, activationCode
                     }
 
                 } catch (e) {
-                    document.getElementById('download-error-message').textContent = 'Invalid response format';
+                    document.getElementById('download-error-message').textContent = _('Invalid response format');
                     var el = document.getElementById('download-error'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
                     console.error('JSON parsing error:', e);
                 }
             } else {
-                document.getElementById('download-error-message').textContent = 'Failed to download profile (HTTP ' + xhr.status + ')';
+                document.getElementById('download-error-message').textContent = _('Failed to download profile (HTTP ') + xhr.status + ')';
                 var el = document.getElementById('download-error'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
             }
         }
@@ -425,7 +425,7 @@ function proceedWithDiscoverDownload(server, imei) {
                         if (msg.indexOf('downloaded') !== -1) {
                             // Profile downloaded successfully
                             document.getElementById('discover-download-success-message').textContent =
-                                'Profile downloaded successfully! Please reboot modem to activate.';
+                                _('Profile downloaded successfully! Please reboot modem to activate.');
                             var el = document.getElementById('discover-download-success'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
 
                             // Check reboot status to show banner
@@ -435,7 +435,7 @@ function proceedWithDiscoverDownload(server, imei) {
                         } else if (msg.indexOf('no profiles') !== -1) {
                             // No profiles available
                             document.getElementById('discover-download-info-message').textContent =
-                                'No profiles available for this device from SM-DS.';
+                                _('No profiles available for this device from SM-DS.');
                             var el = document.getElementById('discover-download-info'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
                         } else {
                             // Other success message
@@ -445,17 +445,17 @@ function proceedWithDiscoverDownload(server, imei) {
                     } else {
                         // Error response
                         document.getElementById('discover-download-error-message').textContent =
-                            response.error || 'Discovery failed';
+                            response.error || _('Discovery failed');
                         var el = document.getElementById('discover-download-error'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
                     }
                 } catch (e) {
                     document.getElementById('discover-download-error-message').textContent =
-                        'Failed to parse response';
+                        _('Failed to parse response');
                     var el = document.getElementById('discover-download-error'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
                 }
             } else {
                 document.getElementById('discover-download-error-message').textContent =
-                    'Request failed (HTTP ' + xhr.status + ')';
+                    _('Request failed (HTTP ') + xhr.status + ')';
                 var el = document.getElementById('discover-download-error'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
             }
         }
