@@ -214,14 +214,15 @@ function saveConfig() {
             if (xhr.status === 200) {
                 var data = JSON.parse(xhr.responseText);
                 if (data.success) {
-                    document.getElementById('config-success-message').textContent = data.message || 'Configuration saved successfully';
-                    var el = document.getElementById('config-success'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
+                    // Success: just update currentConfig, no message displayed
                     currentConfig = config;
                 } else {
+                    // Error: show error message
                     document.getElementById('config-error-message').textContent = data.error || 'Unknown error';
                     var el = document.getElementById('config-error'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
                 }
             } else {
+                // Network error: show error message
                 document.getElementById('config-error-message').textContent = 'Failed to save configuration';
                 var el = document.getElementById('config-error'); if (el) { el.classList.remove('hidden'); el.style.display = 'block'; }
             }
