@@ -66,8 +66,21 @@ function build_hermes_args()
         table.insert(args, "-driver " .. util.shellquote(config.driver))
     end
 
-    if config.device and config.device ~= '' then
-        table.insert(args, "-device " .. util.shellquote(config.device))
+    -- Select device based on driver type
+    local device = config.device or ''
+    if device == '' then
+        -- If generic device is not set, use driver-specific device
+        if config.driver == 'at' and config.at_device and config.at_device ~= '' then
+            device = config.at_device
+        elseif config.driver == 'qmi' and config.qmi_device and config.qmi_device ~= '' then
+            device = config.qmi_device
+        elseif config.driver == 'mbim' and config.mbim_device and config.mbim_device ~= '' then
+            device = config.mbim_device
+        end
+    end
+
+    if device and device ~= '' then
+        table.insert(args, "-device " .. util.shellquote(device))
     end
 
     if config.slot and config.slot ~= '1' then
