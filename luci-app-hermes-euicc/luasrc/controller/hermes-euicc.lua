@@ -234,8 +234,14 @@ function hermes_save_config()
         return
     end
 
+    -- Delete existing config
     uci:delete("hermes-euicc", "hermes-euicc")
+
+    -- Create new config section
     uci:section("hermes-euicc", "hermes-euicc", "hermes-euicc", config["hermes-euicc"])
+
+    -- Save changes
+    uci:save("hermes-euicc")
     uci:commit("hermes-euicc")
 
     luci.http.write_json({success = true, message = "Config saved"})
