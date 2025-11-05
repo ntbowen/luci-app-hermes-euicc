@@ -195,11 +195,11 @@ function hermes_config()
     local config = {}
 
     uci:foreach("hermes-euicc", "hermes_euicc", function(s)
-        config["hermes-euicc"] = s
+        config["config"] = s
     end)
 
-    if not config["hermes-euicc"] then
-        config["hermes-euicc"] = {
+    if not config["config"] then
+        config["config"] = {
             driver = 'auto',
             device = '',
             slot = '1',
@@ -229,7 +229,7 @@ function hermes_save_config()
     end
 
     local config = json.parse(config_data)
-    if not config or not config["hermes-euicc"] then
+    if not config or not config["config"] then
         luci.http.write_json({success = false, error = "Invalid config"})
         return
     end
@@ -246,7 +246,7 @@ function hermes_save_config()
 
     -- Create new config section
     success, err = pcall(function()
-        uci:section("hermes-euicc", "hermes_euicc", "config", config["hermes-euicc"])
+        uci:section("hermes-euicc", "hermes_euicc", "config", config["config"])
     end)
 
     if not success then

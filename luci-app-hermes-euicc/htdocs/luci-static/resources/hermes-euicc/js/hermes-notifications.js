@@ -16,8 +16,8 @@ function fetchEnableLogsConfig(callback) {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var data = JSON.parse(xhr.responseText);
             if (data.success && data.config) {
-                SHOW_LOGS = (data.config['hermes-euicc'].json_output == 1 || data.config['hermes-euicc'].json_output === "1");
-                ENABLE_BULK_NOTIFICATION = (data.config['hermes-euicc'].enable_bulk_notification == 1 || data.config['hermes-euicc'].enable_bulk_notification === "1");
+                SHOW_LOGS = (data.config['config'].json_output == 1 || data.config['config'].json_output === "1");
+                ENABLE_BULK_NOTIFICATION = (data.config['config'].enable_bulk_notification == 1 || data.config['config'].enable_bulk_notification === "1");
 
                 // Show/hide bulk notification actions based on config
                 var bulkActionsDiv = document.getElementById('bulk-notification-actions');

@@ -14,7 +14,7 @@ function fetchEnableLogsConfig(callback) {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var data = JSON.parse(xhr.responseText);
             if (data.success && data.config) {
-                SHOW_LOGS = (data.config['hermes-euicc'].json_output == 1 || data.config['hermes-euicc'].json_output === "1");
+                SHOW_LOGS = (data.config['config'].json_output == 1 || data.config['config'].json_output === "1");
                 if (callback) callback(SHOW_LOGS);
             }
         }

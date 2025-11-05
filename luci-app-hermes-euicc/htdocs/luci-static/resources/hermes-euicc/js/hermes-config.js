@@ -163,32 +163,32 @@ function loadConfig() {
 }
 
 function populateForm(config) {
-    // hermes-euicc settings - everything is now unified under config['hermes-euicc']
-    if (config['hermes-euicc']) {
+    // hermes-euicc settings - everything is now unified under config['config']
+    if (config['config']) {
         // Global settings
-        document.getElementById('apdu_backend').value = config['hermes-euicc'].driver || 'auto';
+        document.getElementById('apdu_backend').value = config['config'].driver || 'auto';
 
         // Device settings - set after device dropdowns are populated
-        setDeviceValue('at_device', config['hermes-euicc'].at_device || '/dev/ttyUSB3');
-        setDeviceValue('qmi_device', config['hermes-euicc'].qmi_device || '/dev/cdc-wdm0');
-        document.getElementById('qmi_sim_slot').value = config['hermes-euicc'].qmi_sim_slot || '1';
-        setDeviceValue('mbim_device', config['hermes-euicc'].mbim_device || '/dev/cdc-wdm0');
-        document.getElementById('mbim_proxy').value = config['hermes-euicc'].mbim_proxy || '0';
+        setDeviceValue('at_device', config['config'].at_device || '/dev/ttyUSB3');
+        setDeviceValue('qmi_device', config['config'].qmi_device || '/dev/cdc-wdm0');
+        document.getElementById('qmi_sim_slot').value = config['config'].qmi_sim_slot || '1';
+        setDeviceValue('mbim_device', config['config'].mbim_device || '/dev/cdc-wdm0');
+        document.getElementById('mbim_proxy').value = config['config'].mbim_proxy || '0';
 
         // Reboot settings
-        document.getElementById('reboot_method').value = config['hermes-euicc'].reboot_method || 'at';
-        document.getElementById('reboot_at_command').value = config['hermes-euicc'].reboot_at_command || 'AT+CFUN=1,1';
-        setDeviceValue('reboot_at_device', config['hermes-euicc'].reboot_at_device || '/dev/ttyUSB3');
-        setDeviceValue('reboot_qmi_device', config['hermes-euicc'].reboot_qmi_device || '/dev/cdc-wdm0');
-        document.getElementById('reboot_qmi_slot').value = config['hermes-euicc'].reboot_qmi_slot || config['hermes-euicc'].qmi_sim_slot || '1';
-        setDeviceValue('reboot_mbim_device', config['hermes-euicc'].reboot_mbim_device || '/dev/cdc-wdm0');
-        document.getElementById('reboot_custom_command').value = config['hermes-euicc'].reboot_custom_command || 'echo "Custom reboot command here"';
+        document.getElementById('reboot_method').value = config['config'].reboot_method || 'at';
+        document.getElementById('reboot_at_command').value = config['config'].reboot_at_command || 'AT+CFUN=1,1';
+        setDeviceValue('reboot_at_device', config['config'].reboot_at_device || '/dev/ttyUSB3');
+        setDeviceValue('reboot_qmi_device', config['config'].reboot_qmi_device || '/dev/cdc-wdm0');
+        document.getElementById('reboot_qmi_slot').value = config['config'].reboot_qmi_slot || config['config'].qmi_sim_slot || '1';
+        setDeviceValue('reboot_mbim_device', config['config'].reboot_mbim_device || '/dev/cdc-wdm0');
+        document.getElementById('reboot_custom_command').value = config['config'].reboot_custom_command || 'echo "Custom reboot command here"';
 
         // Logs settings
-        document.getElementById('json_output').value = config['hermes-euicc'].json_output || '0';
+        document.getElementById('json_output').value = config['config'].json_output || '0';
 
         // Notification settings
-        document.getElementById('enable_bulk_notification').value = config['hermes-euicc'].enable_bulk_notification || '0';
+        document.getElementById('enable_bulk_notification').value = config['config'].enable_bulk_notification || '0';
 
     } else {
         // Set default values if no configuration exists
