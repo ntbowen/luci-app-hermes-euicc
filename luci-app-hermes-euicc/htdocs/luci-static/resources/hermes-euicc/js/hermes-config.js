@@ -166,7 +166,7 @@ function populateForm(config) {
     // hermes-euicc settings - everything is now unified under config['hermes-euicc']
     if (config['hermes-euicc']) {
         // Global settings
-        document.getElementById('apdu_backend').value = config['hermes-euicc'].apdu_backend || 'at';
+        document.getElementById('apdu_backend').value = config['hermes-euicc'].driver || 'auto';
 
         // Device settings - set after device dropdowns are populated
         setDeviceValue('at_device', config['hermes-euicc'].at_device || '/dev/ttyUSB3');
@@ -238,7 +238,7 @@ function setDeviceValue(selectId, value) {
 
 function setDefaultValues() {
     // Global settings defaults
-    document.getElementById('apdu_backend').value = 'at';
+    document.getElementById('apdu_backend').value = 'auto';
 
     // Device settings defaults
     document.getElementById('at_device').value = '/dev/ttyUSB3';
@@ -338,8 +338,11 @@ function saveConfig() {
     // Read all form data and organize it in the unified hermes-euicc structure
     var config = {
         "hermes-euicc": {
-            // Global settings
-            apdu_backend: document.getElementById('apdu_backend').value,
+            // Global settings - match UCI config field names
+            driver: document.getElementById('apdu_backend').value,
+            device: '',  // Not used currently, kept for compatibility
+            slot: document.getElementById('qmi_sim_slot').value,
+            timeout: '30',  // Default timeout, kept for compatibility
 
             // Device settings - get from select or custom input
             at_device: getDeviceValue('at_device'),
