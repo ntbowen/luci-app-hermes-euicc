@@ -4,3 +4,4 @@
 # Build artifacts
 *.ipk
 build/
+build_ipk/

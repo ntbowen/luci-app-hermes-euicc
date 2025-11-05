@@ -19,6 +19,7 @@ NC='\033[0m' # No Color
 # Get script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$SCRIPT_DIR"
+PKG_FOLDER="$PROJECT_DIR/build_ipk"
 
 # Self-check: Fix line endings in build.sh itself if needed
 # This ensures the script can run even if it has Windows line endings
@@ -54,20 +55,20 @@ BASE_VERSION="$PKG_VERSION"
 LATEST_BUILD=0
 
 # Find all existing IPK files and extract highest build number
-shopt -s nullglob
-for ipk in "$PROJECT_DIR"/${PKG_NAME}_${BASE_VERSION}-*_${PKG_ARCH}.ipk; do
-    if [ -f "$ipk" ]; then
+# shopt -s nullglob
+# for ipk in "$PROJECT_DIR"/${PKG_NAME}_${BASE_VERSION}-*_${PKG_ARCH}.ipk; do
+#     if [ -f "$ipk" ]; then
         # Extract build number using Perl regex: 1.0.1-N_all.ipk -> N
-        BUILD_NUM=$(basename "$ipk" | perl -ne 'print $1 if /'"$PKG_NAME"'_'"${BASE_VERSION//./\\.}"'-(\d+)_'"$PKG_ARCH"'\.ipk/')
-        if [ -n "$BUILD_NUM" ] && [ "$BUILD_NUM" -gt "$LATEST_BUILD" ]; then
-            LATEST_BUILD=$BUILD_NUM
-        fi
-    fi
-done
-shopt -u nullglob
+#         BUILD_NUM=$(basename "$ipk" | perl -ne 'print $1 if /'"$PKG_NAME"'_'"${BASE_VERSION//./\\.}"'-(\d+)_'"$PKG_ARCH"'\.ipk/')
+#         if [ -n "$BUILD_NUM" ] && [ "$BUILD_NUM" -gt "$LATEST_BUILD" ]; then
+#             LATEST_BUILD=$BUILD_NUM
+#         fi
+#     fi
+# done
+# shopt -u nullglob
 
 # Increment build number
-NEW_BUILD=$((LATEST_BUILD + 1))
+NEW_BUILD=$(git rev-list --count HEAD 2>/dev/null || echo "1")  # Auto-increment with git commits
 PKG_RELEASE="$NEW_BUILD"
 FULL_VERSION="${PKG_VERSION}-${PKG_RELEASE}"
 
@@ -111,7 +112,7 @@ generate_changelog() {
     echo -e "$changelog_items"
 }
 
-# Update about.htm with package information from Makefile (template-based)
+# Update about.htm with package information from Makefile
 if [ -f "$PKG_SOURCE_DIR/luasrc/view/hermes/about.htm.template" ]; then
     # Copy template to about.htm
     cp "$PKG_SOURCE_DIR/luasrc/view/hermes/about.htm.template" "$PKG_SOURCE_DIR/luasrc/view/hermes/about.htm"
@@ -384,7 +385,10 @@ if [ ! -f data.tar.gz ]; then
 fi
 
 # Create IPK (tar.gz archive, NOT ar!)
-IPK_FILE="$PROJECT_DIR/${PKG_NAME}_${FULL_VERSION}_${PKG_ARCH}.ipk"
+# Ensure build_ipk directory exists
+mkdir -p "$PKG_FOLDER"
+
+IPK_FILE="$PKG_FOLDER/${PKG_NAME}_${FULL_VERSION}_${PKG_ARCH}.ipk"
 
 # Remove old IPK if exists
 rm -f "$IPK_FILE"
