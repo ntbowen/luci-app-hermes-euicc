@@ -102,7 +102,7 @@ function auto_process_notifications()
     end)
 
     if config.enable_bulk_notification == '1' then
-        local cmd_args = "notification process-all"
+        local cmd_args = "auto-notification"
         local result = exec_hermes_command(cmd_args, 60)
         luci.sys.exec("logger -t hermes-euicc 'Auto-processed pending notifications'")
         return result
