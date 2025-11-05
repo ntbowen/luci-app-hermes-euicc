@@ -94,6 +94,22 @@ function build_hermes_args()
     return table.concat(args, " ")
 end
 
+-- Auto-process pending notifications if enabled
+function auto_process_notifications()
+    local config = {}
+    uci:foreach("hermes-euicc", "hermes_euicc", function(s)
+        config = s
+    end)
+
+    if config.enable_bulk_notification == '1' then
+        local cmd_args = "notification process-all"
+        local result = exec_hermes_command(cmd_args, 60)
+        luci.sys.exec("logger -t hermes-euicc 'Auto-processed pending notifications'")
+        return result
+    end
+    return nil
+end
+
 -- Execute hermes-euicc command
 function exec_hermes_command(cmd_args, timeout_seconds)
     local args = build_hermes_args()
@@ -194,7 +210,10 @@ function hermes_toggle()
     if result.success then
         luci.sys.exec("touch /tmp/hermes_euicc_reboot_needed")
         luci.sys.exec("echo 'Profile " .. action .. "d - modem restart required' > /tmp/hermes_euicc_reboot_reason")
-        
+
+        -- Auto-process notifications if enabled
+        auto_process_notifications()
+
         luci.http.write_json({
             success = true,
             message = result.data.message or "Profile " .. action .. "d successfully"
@@ -313,6 +332,12 @@ function hermes_download_profile()
     end
 
     local result = exec_hermes_command(cmd, 90)
+
+    -- Auto-process notifications if download was successful
+    if result.success then
+        auto_process_notifications()
+    end
+
     luci.http.write_json(result)
 end
 
@@ -327,6 +352,12 @@ function hermes_delete_profile()
     end
 
     local result = exec_hermes_command("delete " .. util.shellquote(iccid), 30)
+
+    -- Auto-process notifications if delete was successful
+    if result.success then
+        auto_process_notifications()
+    end
+
     luci.http.write_json(result)
 end
 
