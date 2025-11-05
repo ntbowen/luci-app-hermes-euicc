@@ -304,6 +304,12 @@ EOF
 
 echo "  → Control file created"
 
+# Create conffiles to mark UCI config as preserved during upgrades
+cat > "$CONTROL_DIR/conffiles" << EOF
+/etc/config/hermes-euicc
+EOF
+echo "  → Conffiles created (UCI config marked for preservation)"
+
 # Create postinst script (optional - for clearing LuCI cache)
 cat > "$CONTROL_DIR/postinst" << 'EOF'
 #!/bin/sh
@@ -311,29 +317,10 @@ cat > "$CONTROL_DIR/postinst" << 'EOF'
 [ -d /tmp/luci-modulecache ] && rm -rf /tmp/luci-modulecache/* 2>/dev/null
 [ -d /tmp/luci-indexcache ] && rm -rf /tmp/luci-indexcache/* 2>/dev/null
 
-# Initialize hermes-euicc UCI config if it doesn't exist (ONLY on first install)
-if [ ! -f /etc/config/hermes-euicc ]; then
-    touch /etc/config/hermes-euicc
-fi
-
-# Ensure hermes-euicc section exists with defaults (ONLY if section doesn't exist)
-if ! uci -q get hermes-euicc.hermes-euicc >/dev/null 2>&1; then
-    uci set hermes-euicc.hermes-euicc='hermes-euicc'
-    uci set hermes-euicc.hermes-euicc.driver='auto'
-    uci set hermes-euicc.hermes-euicc.device=''
-    uci set hermes-euicc.hermes-euicc.slot='1'
-    uci set hermes-euicc.hermes-euicc.timeout='30'
-    uci set hermes-euicc.hermes-euicc.reboot_method='at'
-    uci set hermes-euicc.hermes-euicc.reboot_at_device='/dev/ttyUSB3'
-    uci set hermes-euicc.hermes-euicc.reboot_at_command='AT+CFUN=1,1'
-    uci set hermes-euicc.hermes-euicc.reboot_qmi_device='/dev/cdc-wdm0'
-    uci set hermes-euicc.hermes-euicc.reboot_qmi_slot='1'
-    uci set hermes-euicc.hermes-euicc.reboot_mbim_device='/dev/cdc-wdm0'
-    uci set hermes-euicc.hermes-euicc.reboot_custom_command='echo "Custom reboot command"'
-    uci set hermes-euicc.hermes-euicc.json_output='0'
-    uci set hermes-euicc.hermes-euicc.enable_bulk_notification='0'
-    uci commit hermes-euicc
-fi
+# Initialize hermes-euicc UCI config ONLY on first install (preserve on upgrades)
+# The default config file is already installed at /etc/config/hermes-euicc by the package
+# We do nothing here - the package manager handles config file installation
+# If config exists, it will be preserved on upgrade (OpenWrt conffiles behavior)
 
 exit 0
 EOF
