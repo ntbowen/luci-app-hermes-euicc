@@ -424,6 +424,53 @@ function hermes_auto_notification()
     luci.http.write_json(result)
 end
 
+function hermes_notification_process_all()
+    local result = exec_hermes_command("auto-notification", 60)
+
+    luci.http.prepare_content("application/json")
+    luci.http.write_json(result)
+end
+
+function hermes_notification_process_and_remove_all()
+    local process_result = exec_hermes_command("auto-notification", 60)
+
+    if process_result and process_result.success then
+        local remove_result = exec_hermes_command("notification list", 30)
+        if remove_result and remove_result.success and remove_result.notifications then
+            for _, notif in ipairs(remove_result.notifications) do
+                if notif.sequence_number then
+                    exec_hermes_command("notification remove " .. notif.sequence_number, 30)
+                end
+            end
+        end
+    end
+
+    luci.http.prepare_content("application/json")
+    luci.http.write_json(process_result)
+end
+
+function hermes_notification_remove_all()
+    local list_result = exec_hermes_command("notification list", 30)
+    local removed = 0
+
+    if list_result and list_result.success and list_result.notifications then
+        for _, notif in ipairs(list_result.notifications) do
+            if notif.sequence_number then
+                local result = exec_hermes_command("notification remove " .. notif.sequence_number, 30)
+                if result and result.success then
+                    removed = removed + 1
+                end
+            end
+        end
+    end
+
+    luci.http.prepare_content("application/json")
+    luci.http.write_json({
+        success = true,
+        removed = removed
+    })
+end
+
 function reboot_status()
     luci.http.prepare_content("application/json")
 
