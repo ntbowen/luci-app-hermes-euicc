@@ -867,6 +867,43 @@
 }
 
 /* ==========================================================================
+   REBOOT MODAL
+   ========================================================================== */
+
+.reboot-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+    text-align: center;
+    min-width: 300px;
+}
+
+.reboot-modal h3 {
+    margin-top: 0;
+    color: #007bff;
+}
+
+.reboot-modal p {
+    color: #333;
+}
+
+.reboot-modal .loading-text {
+    font-size: 12px;
+    color: #666;
+}
+
+.reboot-modal .loading-icon {
+    margin: 15px 0;
+}
+
+/* ==========================================================================
    DARK MODE SUPPORT
    ========================================================================== */
 
@@ -1090,5 +1127,23 @@
 
     legend {
         color: #e0e0e0 !important;
+    }
+
+    /* Reboot Modal */
+    .reboot-modal {
+        background: #2a2a2a !important;
+        border-color: #007bff !important;
+    }
+
+    .reboot-modal h3 {
+        color: #4da3ff !important;
+    }
+
+    .reboot-modal p {
+        color: #e0e0e0 !important;
+    }
+
+    .reboot-modal .loading-text {
+        color: #b0b0b0 !important;
     }
 }
