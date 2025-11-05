@@ -168,7 +168,28 @@ function createOperationBadge(operation) {
     var badge = document.createElement('span');
     badge.className = 'operation-badge';
 
-    switch (operation.toLowerCase()) {
+    // Convert number to operation name (API returns numeric values)
+    // 1 = delete, 2 = disable, 3 = enable
+    var operationName;
+    if (typeof operation === 'number') {
+        switch (operation) {
+            case 1:
+                operationName = 'delete';
+                break;
+            case 2:
+                operationName = 'disable';
+                break;
+            case 3:
+                operationName = 'enable';
+                break;
+            default:
+                operationName = 'unknown';
+        }
+    } else {
+        operationName = String(operation).toLowerCase();
+    }
+
+    switch (operationName) {
         case 'install':
             badge.className += ' operation-install';
             badge.textContent = _('INSTALL');
@@ -187,7 +208,7 @@ function createOperationBadge(operation) {
             break;
         default:
             badge.className += ' operation-unknown';
-            badge.textContent = operation.toUpperCase();
+            badge.textContent = String(operation).toUpperCase();
     }
 
     return badge;
