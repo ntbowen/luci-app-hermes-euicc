@@ -49,7 +49,7 @@ function build_hermes_args()
     local args = {}
     local config = {}
 
-    uci:foreach("hermes-euicc", "hermes-euicc", function(s)
+    uci:foreach("hermes-euicc", "hermes_euicc", function(s)
         config = s
     end)
 
@@ -194,7 +194,7 @@ end
 function hermes_config()
     local config = {}
 
-    uci:foreach("hermes-euicc", "hermes-euicc", function(s)
+    uci:foreach("hermes-euicc", "hermes_euicc", function(s)
         config["hermes-euicc"] = s
     end)
 
@@ -236,7 +236,7 @@ function hermes_save_config()
 
     -- Try to delete existing config section
     local success, err = pcall(function()
-        uci:delete("hermes-euicc", "hermes-euicc")
+        uci:delete("hermes-euicc", "config")
     end)
 
     if not success then
@@ -246,7 +246,7 @@ function hermes_save_config()
 
     -- Create new config section
     success, err = pcall(function()
-        uci:section("hermes-euicc", "hermes-euicc", "hermes-euicc", config["hermes-euicc"])
+        uci:section("hermes-euicc", "hermes_euicc", "config", config["hermes-euicc"])
     end)
 
     if not success then
@@ -406,7 +406,7 @@ function reboot_modem()
     luci.sys.exec("rm -f /tmp/hermes_euicc_reboot_needed /tmp/hermes_euicc_reboot_reason")
 
     local config = {}
-    uci:foreach("hermes-euicc", "hermes-euicc", function(s) config = s end)
+    uci:foreach("hermes-euicc", "hermes_euicc", function(s) config = s end)
 
     if not config.reboot_method then
         config.reboot_method = 'at'

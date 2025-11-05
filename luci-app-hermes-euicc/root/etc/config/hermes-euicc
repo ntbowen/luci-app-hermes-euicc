@@ -1,4 +1,4 @@
-config hermes-euicc 'hermes-euicc'
+config hermes_euicc 'config'
 	option driver 'auto'
 	option device ''
 	option slot '1'
