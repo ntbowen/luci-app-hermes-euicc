@@ -335,9 +335,10 @@ function saveConfig() {
         contentEl.style.display = 'none';
     }
 
-    // Read all form data and organize it in the unified hermes-euicc structure
+    // Read all form data and organize it in the unified config structure
+    // IMPORTANT: Backend expects "config" key, not "hermes-euicc"
     var config = {
-        "hermes-euicc": {
+        "config": {
             // Global settings - match UCI config field names
             driver: document.getElementById('apdu_backend').value,
             device: '',  // Not used currently, kept for compatibility
