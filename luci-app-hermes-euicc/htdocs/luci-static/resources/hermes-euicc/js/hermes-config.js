@@ -276,7 +276,7 @@ function onBackendChange() {
     // Show only relevant settings
     if (backend === 'at') {
         document.getElementById('at-device-setting').style.display = 'flex';
-    } else if (backend === 'uqmi') {
+    } else if (backend === 'qmi') {
         document.getElementById('qmi-device-setting').style.display = 'flex';
         document.getElementById('qmi-sim-slot-setting').style.display = 'flex';
     } else if (backend === 'mbim') {
@@ -456,7 +456,7 @@ function validateConfig() {
             alert(_('AT device path must start with /dev/'));
             return false;
         }
-    } else if (backend === 'uqmi') {
+    } else if (backend === 'qmi') {
         var qmiDevice = document.getElementById('qmi_device').value;
         if (!validateDevicePath(qmiDevice)) {
             alert(_('QMI device path must start with /dev/'));
