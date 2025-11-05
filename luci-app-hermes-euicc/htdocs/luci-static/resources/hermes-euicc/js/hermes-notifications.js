@@ -108,7 +108,7 @@ function displayNotifications(notifications) {
         var seqCell = document.createElement('td');
         seqCell.className = 'cbi-section-table-cell';
         seqCell.style.fontWeight = 'bold';
-        seqCell.textContent = notification.seq_number || '-';
+        seqCell.textContent = notification.sequence_number || '-';
         row.appendChild(seqCell);
 
         // ICCID
@@ -139,20 +139,20 @@ function displayNotifications(notifications) {
         actionsCell.className = 'cbi-section-table-cell';
         actionsCell.style.textAlign = 'center';
 
-        if (notification.seq_number) {
+        if (notification.sequence_number) {
             // Process button
             var processBtn = document.createElement('input');
             processBtn.type = 'button';
             processBtn.className = 'cbi-button notification-action-btn process-btn';
             processBtn.value = _('Process');
-            processBtn.onclick = function () { processNotification(notification.seq_number); };
+            processBtn.onclick = function () { processNotification(notification.sequence_number); };
 
             // Remove button
             var removeBtn = document.createElement('input');
             removeBtn.type = 'button';
             removeBtn.className = 'cbi-button notification-action-btn remove-btn';
             removeBtn.value = _('Remove');
-            removeBtn.onclick = function () { removeNotification(notification.seq_number); };
+            removeBtn.onclick = function () { removeNotification(notification.sequence_number); };
 
             actionsCell.appendChild(processBtn);
             actionsCell.appendChild(document.createTextNode(' '));
