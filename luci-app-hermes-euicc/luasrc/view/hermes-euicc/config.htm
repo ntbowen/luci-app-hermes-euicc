@@ -3,6 +3,15 @@
 <h2 name="content"><%:Configuration%></h2>
 <div class="cbi-map-descr"><%:Configure Hermes eUICC backend settings, device paths, and modem reboot methods%></div>
 
+<!-- Status Messages (Error/Success) -->
+<div id="config-error" class="error-message" style="display: none;">
+    <strong><%:Error%>:</strong> <span id="config-error-message"></span>
+</div>
+
+<div id="config-success" class="success-message" style="display: none;">
+    <strong><%:Success%>:</strong> <span id="config-success-message"></span>
+</div>
+
 <div id="config-loading" class="loading-container">
     <img src="<%=resource%>/hermes-euicc/icons/loading.gif" alt="<%:Loading%>" class="v-align-middle" />
     <%:Loading configuration...%>
@@ -191,14 +200,6 @@
             <input type="button" class="cbi-button cbi-button-reset" value="<%:Reset%>" onclick="loadConfig()" />
         </div>
     </form>
-</div>
-
-<div id="config-error" class="error-message">
-    <strong><%:Error%>:</strong> <span id="config-error-message"></span>
-</div>
-
-<div id="config-success" class="success-message">
-    <strong><%:Success%>:</strong> <span id="config-success-message"></span>
 </div>
 
 <link rel="stylesheet" type="text/css" href="<%=resource%>/hermes-euicc/css/hermes-euicc.css" />
