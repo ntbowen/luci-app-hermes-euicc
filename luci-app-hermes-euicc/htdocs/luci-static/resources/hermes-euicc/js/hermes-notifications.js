@@ -22,7 +22,11 @@ function fetchEnableLogsConfig(callback) {
                 // Show/hide bulk notification actions based on config
                 var bulkActionsDiv = document.getElementById('bulk-notification-actions');
                 if (bulkActionsDiv) {
-                    bulkActionsDiv.style.display = ENABLE_BULK_NOTIFICATION ? 'inline' : 'none';
+                    if (ENABLE_BULK_NOTIFICATION) {
+                        bulkActionsDiv.classList.remove('hidden');
+                    } else {
+                        bulkActionsDiv.classList.add('hidden');
+                    }
                 }
 
                 if (callback) callback(SHOW_LOGS);

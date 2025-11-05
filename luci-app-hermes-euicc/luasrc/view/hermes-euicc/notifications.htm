@@ -93,10 +93,18 @@
     // Initialize page when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(loadNotifications, 100);
+            setTimeout(function() {
+                fetchEnableLogsConfig(function() {
+                    loadNotifications();
+                });
+            }, 100);
         });
     } else {
-        setTimeout(loadNotifications, 100);
+        setTimeout(function() {
+            fetchEnableLogsConfig(function() {
+                loadNotifications();
+            });
+        }, 100);
     }
 </script>
 
