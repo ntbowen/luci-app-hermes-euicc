@@ -379,8 +379,21 @@ function saveConfig() {
             if (xhr.status === 200) {
                 var data = JSON.parse(xhr.responseText);
                 if (data.success) {
-                    // Success: just update currentConfig, no message displayed
+                    // Success: update currentConfig and show success message
                     currentConfig = config;
+                    document.getElementById('config-success-message').textContent = _('Configuration saved successfully');
+                    var successEl = document.getElementById('config-success');
+                    if (successEl) {
+                        successEl.classList.remove('hidden');
+                        successEl.style.display = 'block';
+                    }
+
+                    // Hide success message after 3 seconds
+                    setTimeout(function() {
+                        if (successEl) {
+                            successEl.style.display = 'none';
+                        }
+                    }, 3000);
                 } else {
                     // Error: show error message
                     document.getElementById('config-error-message').textContent = data.error || _('Unknown error');

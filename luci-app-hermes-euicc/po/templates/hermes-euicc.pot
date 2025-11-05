@@ -694,3 +694,6 @@ msgstr ""
 
 msgid "Failed to load eSIM information"
 msgstr ""
+
+msgid "Configuration saved successfully"
+msgstr ""

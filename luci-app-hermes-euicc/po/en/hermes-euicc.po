@@ -694,3 +694,5 @@ msgstr "Failed to download profile (HTTP "
 
 msgid "Failed to load eSIM information"
 msgstr "Failed to load eSIM information"
+msgid "Configuration saved successfully"
+msgstr "Configuration saved successfully"
