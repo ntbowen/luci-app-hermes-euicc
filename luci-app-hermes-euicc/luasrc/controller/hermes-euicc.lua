@@ -234,15 +234,45 @@ function hermes_save_config()
         return
     end
 
-    -- Delete existing config
-    uci:delete("hermes-euicc", "hermes-euicc")
+    -- Try to delete existing config section
+    local success, err = pcall(function()
+        uci:delete("hermes-euicc", "hermes-euicc")
+    end)
+
+    if not success then
+        luci.http.write_json({success = false, error = "Failed to delete config: " .. tostring(err)})
+        return
+    end
 
     -- Create new config section
-    uci:section("hermes-euicc", "hermes-euicc", "hermes-euicc", config["hermes-euicc"])
+    success, err = pcall(function()
+        uci:section("hermes-euicc", "hermes-euicc", "hermes-euicc", config["hermes-euicc"])
+    end)
 
-    -- Save changes
-    uci:save("hermes-euicc")
-    uci:commit("hermes-euicc")
+    if not success then
+        luci.http.write_json({success = false, error = "Failed to create section: " .. tostring(err)})
+        return
+    end
+
+    -- Save changes to staging area
+    success, err = pcall(function()
+        uci:save("hermes-euicc")
+    end)
+
+    if not success then
+        luci.http.write_json({success = false, error = "Failed to save: " .. tostring(err)})
+        return
+    end
+
+    -- Commit changes to persistent storage
+    success, err = pcall(function()
+        uci:commit("hermes-euicc")
+    end)
+
+    if not success then
+        luci.http.write_json({success = false, error = "Failed to commit: " .. tostring(err)})
+        return
+    end
 
     luci.http.write_json({success = true, message = "Config saved"})
 end
