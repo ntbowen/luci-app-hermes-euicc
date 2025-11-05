@@ -4,7 +4,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-hermes-euicc
 PKG_VERSION:=1.0.1
-PKG_RELEASE:=70
+PKG_RELEASE:=72
 PKG_MAINTAINER:=Kilimcinin Kör Oğlu <k@keremgok.tr>
 PKG_LICENSE:=MIT
 
