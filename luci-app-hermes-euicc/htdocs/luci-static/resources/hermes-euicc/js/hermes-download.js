@@ -61,6 +61,31 @@ function validateLPA(s) {
         p[2].length > 0;
 }
 
+function handleLPAInput() {
+    var lpaString = document.getElementById('lpa-string').value.trim();
+
+    if (!lpaString) {
+        // Clear manual fields if LPA input is empty
+        return;
+    }
+
+    // Validate and parse LPA format
+    if (validateLPA(lpaString)) {
+        var parts = lpaString.split('$');
+        // LPA:1$<SMDP>$<ACTIVATION_CODE>
+        var smdpAddress = parts[1];
+        var activationCode = parts[2];
+
+        // Auto-populate manual entry fields
+        document.getElementById('smdp-server-address').value = smdpAddress;
+        document.getElementById('activation-code').value = activationCode;
+    } else if (lpaString.length > 5) {
+        // Only show error if user has typed enough characters
+        // This prevents showing error while user is still typing
+        console.log('Invalid LPA format');
+    }
+}
+
 function decodeQRCode() {
     if (!uploadedFile) {
         return;
@@ -287,6 +312,8 @@ function proceedWithDownload(smdpServerAddress, QRactivationCode, activationCode
 }
 
 function clearForm() {
+    document.getElementById('lpa-string').value = '';
+    document.getElementById('smdp-server-address').value = '';
     document.getElementById('activation-code').value = '';
     document.getElementById('confirmation-code').value = '';
     clearQRUpload();

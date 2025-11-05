@@ -179,6 +179,13 @@
     font-size: 14px;
 }
 
+.divider-slim {
+    text-align: center;
+    margin: 10px 0;
+    color: #999;
+    font-size: 12px;
+}
+
 /* Image previews */
 .img-preview {
     max-width: 300px;

@@ -128,6 +128,18 @@
     <legend><%:Manual Download%></legend>
     <div class="cbi-section-node">
         <div class="cbi-value">
+            <label class="cbi-value-title"><%:LPA Activation Code%>:</label>
+            <div class="cbi-value-field">
+                <input type="text" id="lpa-string" class="cbi-input-text" placeholder="LPA:1$smdp.example.com$ACTIVATION-CODE" oninput="handleLPAInput()">
+                <div class="file-help"><%:Paste full LPA code here (e.g., LPA:1$rsp.truphone.com$QR-CODE) - fields below will be auto-populated%></div>
+            </div>
+        </div>
+
+        <div class="divider-slim">
+            ━━━ <%:OR%> ━━━
+        </div>
+
+        <div class="cbi-value">
             <label class="cbi-value-title"><%:SM-DP+ Server Address%>:</label>
             <div class="cbi-value-field">
                 <input type="text" id="smdp-server-address" class="cbi-input-text" placeholder="<%:Enter SM-DP+ server address%>">
