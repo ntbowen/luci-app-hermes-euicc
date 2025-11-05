@@ -208,14 +208,18 @@
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
-                loadConfig();
-                loadAvailableDevices();
+                // First load devices, then config to avoid race condition
+                loadAvailableDevices(function() {
+                    loadConfig();
+                });
             }, 100);
         });
     } else {
         setTimeout(function() {
-            loadConfig();
-            loadAvailableDevices();
+            // First load devices, then config to avoid race condition
+            loadAvailableDevices(function() {
+                loadConfig();
+            });
         }, 100);
     }
 </script>

@@ -12,15 +12,18 @@ var availableDevices = {
 function loadConfigIfNeeded() {
     if (!configLoaded) {
         configLoaded = true;
-        loadConfig();
-        loadAvailableDevices();
+        // First load devices, then load config to ensure dropdowns are populated
+        loadAvailableDevices(function() {
+            // After devices are loaded, load and populate the configuration
+            loadConfig();
+        });
     }
 }
 
 var currentConfig = {};
 
 // Load available devices from /dev
-function loadAvailableDevices() {
+function loadAvailableDevices(callback) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', L.url('admin', 'modem', 'hermes-euicc', 'api_list_devices'), true);
     xhr.onreadystatechange = function() {
@@ -30,6 +33,10 @@ function loadAvailableDevices() {
                 availableDevices.at_devices = data.at_devices || [];
                 availableDevices.qmi_devices = data.qmi_devices || [];
                 populateDeviceDropdowns();
+                // Call callback after devices are loaded
+                if (callback && typeof callback === 'function') {
+                    callback();
+                }
             }
         }
     };
