@@ -137,7 +137,7 @@ if [ -f "$PKG_SOURCE_DIR/luasrc/view/hermes/about.htm.template" ]; then
 fi
 
 if [ $LATEST_BUILD -eq 0 ]; then
-    echo -e "${BLUE}Build Number:${NC}  $NEW_BUILD (first build)"
+    echo -e "${BLUE}Build Number:${NC}  $NEW_BUILD"
 else
     echo -e "${BLUE}Build Number:${NC}  $LATEST_BUILD → ${GREEN}$NEW_BUILD${NC} (auto-incremented)"
 fi
@@ -311,27 +311,28 @@ cat > "$CONTROL_DIR/postinst" << 'EOF'
 [ -d /tmp/luci-modulecache ] && rm -rf /tmp/luci-modulecache/* 2>/dev/null
 [ -d /tmp/luci-indexcache ] && rm -rf /tmp/luci-indexcache/* 2>/dev/null
 
-# Initialize hermes_euicc UCI config if it doesn't exist
-if [ ! -f /etc/config/hermes_euicc ]; then
-    touch /etc/config/hermes_euicc
+# Initialize hermes-euicc UCI config if it doesn't exist (ONLY on first install)
+if [ ! -f /etc/config/hermes-euicc ]; then
+    touch /etc/config/hermes-euicc
 fi
 
-# Ensure hermes_euicc section exists with defaults
-if ! uci -q get hermes_euicc.@hermes_euicc[0] >/dev/null 2>&1; then
-    uci set hermes_euicc.hermes_euicc='hermes_euicc'
-    uci set hermes_euicc.hermes_euicc.driver='auto'
-    uci set hermes_euicc.hermes_euicc.device=''
-    uci set hermes_euicc.hermes_euicc.slot='1'
-    uci set hermes_euicc.hermes_euicc.timeout='30'
-    uci set hermes_euicc.hermes_euicc.reboot_method='at'
-    uci set hermes_euicc.hermes_euicc.reboot_at_device='/dev/ttyUSB3'
-    uci set hermes_euicc.hermes_euicc.reboot_at_command='AT+CFUN=1,1'
-    uci set hermes_euicc.hermes_euicc.reboot_qmi_device='/dev/cdc-wdm0'
-    uci set hermes_euicc.hermes_euicc.reboot_qmi_slot='1'
-    uci set hermes_euicc.hermes_euicc.reboot_mbim_device='/dev/cdc-wdm0'
-    uci set hermes_euicc.hermes_euicc.reboot_custom_command='echo "Custom reboot command"'
-    uci set hermes_euicc.hermes_euicc.enable_bulk_notification='0'
-    uci commit hermes_euicc
+# Ensure hermes-euicc section exists with defaults (ONLY if section doesn't exist)
+if ! uci -q get hermes-euicc.hermes-euicc >/dev/null 2>&1; then
+    uci set hermes-euicc.hermes-euicc='hermes-euicc'
+    uci set hermes-euicc.hermes-euicc.driver='auto'
+    uci set hermes-euicc.hermes-euicc.device=''
+    uci set hermes-euicc.hermes-euicc.slot='1'
+    uci set hermes-euicc.hermes-euicc.timeout='30'
+    uci set hermes-euicc.hermes-euicc.reboot_method='at'
+    uci set hermes-euicc.hermes-euicc.reboot_at_device='/dev/ttyUSB3'
+    uci set hermes-euicc.hermes-euicc.reboot_at_command='AT+CFUN=1,1'
+    uci set hermes-euicc.hermes-euicc.reboot_qmi_device='/dev/cdc-wdm0'
+    uci set hermes-euicc.hermes-euicc.reboot_qmi_slot='1'
+    uci set hermes-euicc.hermes-euicc.reboot_mbim_device='/dev/cdc-wdm0'
+    uci set hermes-euicc.hermes-euicc.reboot_custom_command='echo "Custom reboot command"'
+    uci set hermes-euicc.hermes-euicc.json_output='0'
+    uci set hermes-euicc.hermes-euicc.enable_bulk_notification='0'
+    uci commit hermes-euicc
 fi
 
 exit 0
