@@ -1,0 +1,163 @@
+--- a/main.go
++++ b/main.go
+@@ -646,13 +646,13 @@
+ 
+ func handleDownload(client *lpa.Client) {
+ 	var (
+-		activationCode          = flag.String("code", "", "Activation code (LPA:1$smdp.io$MATCHING-ID)")
+-		confirmationCodeRequired = flag.Bool("confirmation-code", true, "Profile requires confirmation code")
++		activationCode = flag.String("code", "", "Activation code (LPA:1$smdp.io$MATCHING-ID)")
++		imeiStr        = flag.String("imei", "", "IMEI (required for download)")
+ 	)
+ 
+ 	downloadFlags := flag.NewFlagSet("download", flag.ExitOnError)
+ 	downloadFlags.StringVar(activationCode, "code", "", "Activation code")
+-	downloadFlags.BoolVar(confirmationCodeRequired, "confirmation-code", true, "Profile requires confirmation code")
++	downloadFlags.StringVar(imeiStr, "imei", "", "IMEI")
+ 	downloadFlags.Parse(flag.Args()[1:])
+ 
+ 	if *activationCode == "" {
+@@ -660,35 +660,51 @@
+ 		os.Exit(1)
+ 	}
+ 
+-	err := client.DownloadProfile(*activationCode, *confirmationCodeRequired)
++	if *imeiStr == "" {
++		outputError(fmt.Errorf("IMEI required: use --imei"))
++		os.Exit(1)
++	}
++
++	// Parse activation code
++	ac := &lpa.ActivationCode{}
++	if err := ac.UnmarshalText([]byte(*activationCode)); err != nil {
++		outputError(fmt.Errorf("invalid activation code: %w", err))
++		os.Exit(1)
++	}
++	ac.IMEI = *imeiStr
++
++	// Call DownloadProfile with new API
++	_, err := client.DownloadProfile(context.Background(), ac, nil)
+ 	if err != nil {
+ 		outputError(err)
+ 		os.Exit(1)
+ 	}
+ 
+ 	outputSuccess(map[string]string{
+-		"message": "profile downloaded successfully",
++		"message":         "profile downloaded successfully",
+ 		"activation_code": *activationCode,
+ 	})
+ }
+ 
+ func handleDiscovery(client *lpa.Client) {
+ 	var server = flag.String("server", "", "SM-DS server address (default: GSMA production)")
++	var imeiStr = flag.String("imei", "", "IMEI (optional)")
+ 
+ 	discoveryFlags := flag.NewFlagSet("discovery", flag.ExitOnError)
+ 	discoveryFlags.StringVar(server, "server", "", "SM-DS server address")
++	discoveryFlags.StringVar(imeiStr, "imei", "", "IMEI")
+ 	discoveryFlags.Parse(flag.Args()[1:])
+ 
+-	// Prepare SM-DS address parameter
+-	var smdsAddr *string
+-	if *server != "" {
+-		smdsAddr = server
+-	} else {
+-		smdsAddr = nil // Use default GSMA SM-DS
++	// Prepare DiscoverProfilesOptions
++	opts := &lpa.DiscoverProfilesOptions{
++		SMDSAddress: *server,
++	}
++	if *imeiStr != "" {
++		opts.IMEI = []byte(*imeiStr)
+ 	}
+ 
+ 	// Use library's DiscoverProfiles function with correct API
+-	profiles, err := client.DiscoverProfiles(smdsAddr)
++	profiles, err := client.DiscoverProfiles(opts)
+ 	if err != nil {
+ 		outputError(err)
+ 		os.Exit(1)
+@@ -699,7 +715,7 @@
+ 	for i, profile := range profiles {
+ 		response[i] = DiscoveryResponse{
+ 			EventID: profile.EventID,
+-			Address: profile.SmdpAddress, // Correct field name (lowercase 'm')
++			Address: profile.SMDPAddress, // Correct field name (uppercase 'M')
+ 		}
+ 	}
+ 
+@@ -713,16 +729,13 @@
+ 	discoveryFlags.StringVar(server, "server", "", "SM-DS server address")
+ 	discoveryFlags.Parse(flag.Args()[1:])
+ 
+-	// Prepare SM-DS address parameter
+-	var smdsAddr *string
+-	if *server != "" {
+-		smdsAddr = server
+-	} else {
+-		smdsAddr = nil // Use default GSMA SM-DS
++	// Prepare DiscoverProfilesOptions
++	discoveryOpts := &lpa.DiscoverProfilesOptions{
++		SMDSAddress: *server,
+ 	}
+ 
+ 	// Use library's DiscoverAndDownload function with correct API
+-	err := client.DiscoverAndDownload(smdsAddr)
++	_, err := client.DiscoverAndDownload(context.Background(), discoveryOpts, nil)
+ 	if err != nil {
+ 		outputError(err)
+ 		os.Exit(1)
+@@ -734,7 +747,8 @@
+ }
+ 
+ func handleNotifications(client *lpa.Client) {
+-	notifications, err := client.ListNotification(sgp22.NotificationAll)
++	// List all notifications by passing no filters
++	notifications, err := client.ListNotification()
+ 	if err != nil {
+ 		outputError(err)
+ 		os.Exit(1)
+@@ -743,9 +757,9 @@
+ 	response := make([]NotificationResponse, 0, len(notifications))
+ 	for _, n := range notifications {
+ 		response = append(response, NotificationResponse{
+-			SequenceNumber:             n.SeqNumber,
++			SequenceNumber:             int(n.SequenceNumber),
+ 			ProfileManagementOperation: int(n.ProfileManagementOperation),
+-			Address:                    n.NotificationAddress,
++			Address:                    n.Address,
+ 			ICCID:                      hex.EncodeToString(n.ICCID),
+ 		})
+ 	}
+@@ -765,7 +779,7 @@
+ 		os.Exit(1)
+ 	}
+ 
+-	if err := client.RemoveNotificationFromList(seqNum); err != nil {
++	if err := client.RemoveNotificationFromList(sgp22.SequenceNumber(seqNum)); err != nil {
+ 		outputError(err)
+ 		os.Exit(1)
+ 	}
+@@ -788,7 +802,20 @@
+ 		os.Exit(1)
+ 	}
+ 
+-	if err := client.HandleNotification(seqNum); err != nil {
++	// Retrieve the notification first
++	notifications, err := client.RetrieveNotificationList(sgp22.SequenceNumber(seqNum))
++	if err != nil {
++		outputError(err)
++		os.Exit(1)
++	}
++
++	if len(notifications) == 0 {
++		outputError(fmt.Errorf("notification with sequence number %d not found", seqNum))
++		os.Exit(1)
++	}
++
++	// Handle the notification
++	if err := client.HandleNotification(notifications[0]); err != nil {
+ 		outputError(err)
+ 		os.Exit(1)
+ 	}
